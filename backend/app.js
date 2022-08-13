@@ -1,11 +1,13 @@
 const express = require("express");
+require("./db");
+const userRouter = require("./routes/user");
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("ok");
-});
+app.use(express.json());
 
-app.listen(8000, (req, res) => {
+app.use("/api/user", userRouter);
+
+app.listen(8000, () => {
   console.log("Backend server running on port: 8000");
 });
