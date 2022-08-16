@@ -1,9 +1,11 @@
 const EmailVerificationToken = require("../models/EmailVerificationToken");
-const User = require("../models/user");
-const nodemailer = require("nodemailer");
+const PasswordRestToken = require("../models/PasswordRestToken");
+const User = require("../models/User");
+
+const { generateOTP, generateMailTransporter } = require("../utils/mail");
+const { sendError, generateRandomByte } = require("../utils/helper");
 const { isValidObjectId } = require("mongoose");
-const { generateOTP } = require("../utils/mail");
-const { sendError } = require("../utils/helper");
+const jwt = require("jsonwebtoken");
 
 exports.create = async (req, res) => {
   const { name, email, password } = req.body;
@@ -40,7 +42,11 @@ exports.create = async (req, res) => {
   });
 
   res.status(201).json({
-    message: `Please verify your account, OTP has been sent to your email address: ${newUser.email}`,
+    user: {
+      id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+    },
   });
 };
 
@@ -80,7 +86,12 @@ exports.verifyEmail = async (req, res) => {
     `,
   });
 
-  res.status(201).json({ message: "Your email has been verified" });
+  const jwtToken = await jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+
+  res.status(201).json({
+    user: { id: user._id, name: user.name, email: user.email, token: jwtToken },
+    message: "Your email has been verified successfully",
+  });
 };
 
 exports.resendEmailVerificationToken = async (req, res) => {
@@ -120,4 +131,96 @@ exports.resendEmailVerificationToken = async (req, res) => {
   res.status(201).json({
     message: `Please verify your account, new OTP has been sent to your email address: ${user.email}`,
   });
+};
+
+exports.forgetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) return sendError(res, "There is no user associated with this email address", 404);
+
+  const alreadyHasToken = await PasswordRestToken.findOne({ owner: user._id });
+
+  if (alreadyHasToken) return sendError(res, "You cannot request for another OTP before one hour");
+
+  const token = await generateRandomByte();
+
+  const newPasswordRestToken = await PasswordRestToken({
+    owner: user._id,
+    token,
+  });
+
+  await newPasswordRestToken.save();
+
+  const resetPasswordUrl = `http://localhost:3000/reset-password?token=${token}&id=${user._id}`;
+
+  const transport = generateMailTransporter();
+
+  transport.sendMail({
+    from: "security@moviemri.com",
+    to: user.email,
+    subject: "password Reset",
+    html: `
+      <p>Click here to reset your password:</p>
+      <a href="${resetPasswordUrl}">Reset Password</a>
+    `,
+  });
+
+  res.status(201).json({
+    message: `Please visit your account, reset password link has been sent to your email address: ${user.email}`,
+  });
+};
+
+exports.sendResetPassTokenStatus = (req, res) => {
+  res.json({ valid: true });
+};
+
+exports.resetPassword = async (req, res) => {
+  const { newPassword, userId } = req.body;
+
+  const user = await User.findById(userId);
+
+  const isMatched = await user.comparePassword(newPassword);
+
+  if (isMatched) return sendError(res, "New password must be different from the old one");
+
+  user.password = newPassword;
+
+  await user.save();
+
+  await PasswordRestToken.findByIdAndDelete(req.resetToken._id);
+
+  const transport = generateMailTransporter();
+
+  transport.sendMail({
+    from: "security@moviemri.com",
+    to: user.email,
+    subject: "Password Reset Successfull",
+    html: `
+      <p>Your password has been reset, please signin with your new password</p>
+    `,
+  });
+
+  res.status(201).json({
+    message: "Your password has been reset, please signin with your new password",
+  });
+};
+
+exports.signin = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) return sendError(res, "Email or password is incorrect");
+
+  const isMatched = await user.comparePassword(password);
+
+  if (!isMatched) return sendError(res, "Email or password is incorrect");
+
+  const { _id, name } = user;
+
+  const jwtToken = await jwt.sign({ userId: _id }, process.env.JWT_SECRET);
+
+  res.status(201).json({ user: { id: _id, name, email, token: jwtToken } });
 };

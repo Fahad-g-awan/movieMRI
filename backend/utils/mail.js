@@ -7,6 +7,8 @@ exports.generateOTP = (otp_length = 6) => {
     const randomVal = Math.round(Math.random() * 9);
     OTP += randomVal;
   }
+
+  return OTP;
 };
 
 exports.generateMailTransporter = () =>
@@ -14,7 +16,7 @@ exports.generateMailTransporter = () =>
     host: "smtp.mailtrap.io",
     port: 2525,
     auth: {
-      user: "073125883e4955",
-      pass: "1d38d5e6aea917",
+      user: process.env.MAIL_TRAP_USER,
+      pass: process.env.MAIL_TRAP_PASS,
     },
   });

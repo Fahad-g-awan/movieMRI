@@ -14,6 +14,21 @@ exports.userValidator = [
     .withMessage("Password length must be minimum 8 chracters long"),
 ];
 
+exports.validatePassword = [
+  check("newPassword")
+    .trim()
+    .not()
+    .isEmpty()
+    .withMessage("The password field is required")
+    .isLength({ min: 8, max: 20 })
+    .withMessage("Password length must be minimum 8 chracters long"),
+];
+
+exports.signinValidator = [
+  check("email").normalizeEmail().isEmail().withMessage("Email is not valid"),
+  check("password").trim().not().isEmpty().withMessage("The password field is required"),
+];
+
 exports.validate = (req, res, next) => {
   const error = validationResult(req).array();
 

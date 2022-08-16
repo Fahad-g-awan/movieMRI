@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Route, Routes } from "react-router-dom";
+import ConfirmPassword from "./components/Auth/ConfirmPassword";
+import EmailVerification from "./components/Auth/EmailVerification";
+import ForgetPassword from "./components/Auth/ForgetPassword";
+import Signin from "./components/Auth/Signin";
+import Signup from "./components/Auth/Signup";
+import Home from "./components/Home";
+import NotFound from "./components/NotFound";
+import Navbar from "./components/user/Navbar";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/auth/signup" element={<Signup />} />
+        <Route path="/auth/signin" element={<Signin />} />
+        <Route path="/auth/verification" element={<EmailVerification />} />
+        <Route path="/auth/forget-password" element={<ForgetPassword />} />
+        <Route path="/auth/confirm-password" element={<ConfirmPassword />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 }
-
-export default App;

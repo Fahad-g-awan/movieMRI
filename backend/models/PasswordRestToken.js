@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-const emailVerificationTokenSchema = mongoose.Schema({
+const passwordResetTokenSchema = mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -20,7 +20,7 @@ const emailVerificationTokenSchema = mongoose.Schema({
   },
 });
 
-emailVerificationTokenSchema.pre("save", async function (next) {
+passwordResetTokenSchema.pre("save", async function (next) {
   if (this.isModified("token")) {
     this.token = await bcrypt.hash(this.token, 10);
   }
@@ -28,10 +28,10 @@ emailVerificationTokenSchema.pre("save", async function (next) {
   next();
 });
 
-emailVerificationTokenSchema.methods.compareToken = async function (OTP) {
-  const result = await bcrypt.compare(OTP, this.token);
+passwordResetTokenSchema.methods.compareToken = async function (OTP) {
+  const result = bcrypt.compare(OTP, this.token);
 
   return result;
 };
 
-module.exports = mongoose.model("EmailVerificationToken", emailVerificationTokenSchema);
+module.exports = mongoose.model("PasswordResetToken", passwordResetTokenSchema);

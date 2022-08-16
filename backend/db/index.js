@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 mongoose
-  .connect("mongodb://localhost:27017/movieMRI")
+  .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("Datavase is connected");
+    console.log("Database is connected");
   })
   .catch((ex) => {
     console.log("Database connection failed: ex");
