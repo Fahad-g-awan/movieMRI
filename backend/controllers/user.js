@@ -89,7 +89,13 @@ exports.verifyEmail = async (req, res) => {
   const jwtToken = await jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
 
   res.status(201).json({
-    user: { id: user._id, name: user.name, email: user.email, token: jwtToken },
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      token: jwtToken,
+      isVerified: user.isVerified,
+    },
     message: "Your email has been verified successfully",
   });
 };
@@ -129,7 +135,7 @@ exports.resendEmailVerificationToken = async (req, res) => {
   });
 
   res.status(201).json({
-    message: `Please verify your account, new OTP has been sent to your email address: ${user.email}`,
+    message: `New OTP has been sent to your email address: ${user.email}`,
   });
 };
 
@@ -153,7 +159,7 @@ exports.forgetPassword = async (req, res) => {
 
   await newPasswordRestToken.save();
 
-  const resetPasswordUrl = `http://localhost:3000/reset-password?token=${token}&id=${user._id}`;
+  const resetPasswordUrl = `http://localhost:3000/auth/reset-password?token=${token}&id=${user._id}`;
 
   const transport = generateMailTransporter();
 
@@ -168,7 +174,7 @@ exports.forgetPassword = async (req, res) => {
   });
 
   res.status(201).json({
-    message: `Please visit your account, reset password link has been sent to your email address: ${user.email}`,
+    message: `Reset password link has been sent to your email address: ${user.email}`,
   });
 };
 
@@ -218,9 +224,9 @@ exports.signin = async (req, res) => {
 
   if (!isMatched) return sendError(res, "Email or password is incorrect");
 
-  const { _id, name } = user;
+  const { _id, name, isVerified } = user;
 
   const jwtToken = await jwt.sign({ userId: _id }, process.env.JWT_SECRET);
 
-  res.status(201).json({ user: { id: _id, name, email, token: jwtToken } });
+  res.status(201).json({ user: { id: _id, name, email, token: jwtToken, isVerified } });
 };

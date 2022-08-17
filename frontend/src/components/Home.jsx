@@ -1,5 +1,8 @@
 import React from "react";
+import NotVerified from "./user/NotVerified";
 
+// Main component
 export default function Home() {
-  return <div>Home</div>;
+  // Render UI
+  return <NotVerified />;
 }

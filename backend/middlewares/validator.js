@@ -29,6 +29,12 @@ exports.signinValidator = [
   check("password").trim().not().isEmpty().withMessage("The password field is required"),
 ];
 
+exports.actorValidator = [
+  check("name").trim().not().isEmpty().withMessage("Actor name is required"),
+  check("about").trim().not().isEmpty().withMessage("Actor about is required"),
+  check("gender").trim().not().isEmpty().withMessage("Actor gender is required"),
+];
+
 exports.validate = (req, res, next) => {
   const error = validationResult(req).array();
 

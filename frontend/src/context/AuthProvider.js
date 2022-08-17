@@ -14,7 +14,7 @@ const defaultAuthInfo = {
 export default function AuthProvider({ children }) {
   const [authInfo, setAuthInfo] = useState({ ...defaultAuthInfo });
 
-  //   const { updateNotification } = useNotification();
+  const { updateNotification } = useNotification();
 
   // Login handler
 
@@ -23,8 +23,8 @@ export default function AuthProvider({ children }) {
 
     const { error, user } = await signIn({ email, password });
 
-    // updateNotification("error", error);
     if (error) {
+      updateNotification("error", error);
       return setAuthInfo({ ...defaultAuthInfo, isPending: false, error });
     }
 
@@ -52,6 +52,7 @@ export default function AuthProvider({ children }) {
     const { error, user } = await getIsAuth(token);
 
     if (error) {
+      updateNotification("error", error);
       return setAuthInfo({ ...defaultAuthInfo, isPending: false, error });
     }
 

@@ -7,14 +7,13 @@ import CustomLink from "../CustomLink";
 import FormInput from "../form/FormInput";
 import Submit from "../form/Submit";
 import Title from "../form/Title";
+import { isValidEmail } from "../../utils/helper";
 
 // User validation function
 
 const validateUser = ({ email, password }) => {
-  const isValidEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
   if (!email.trim()) return { ok: false, error: "Email is missing" };
-  if (!isValidEmail.test(email)) return { ok: false, error: "Email is invalid" };
+  if (!isValidEmail(email)) return { ok: false, error: "Email is invalid" };
 
   if (!password.trim()) return { ok: false, error: "Password is missing" };
   if (password.length < 8) return { ok: false, error: "Password must be 8 chracters long" };

@@ -6,6 +6,7 @@ const cors = require("cors");
 require("dotenv").config();
 require("./db");
 const userRouter = require("./routes/user");
+const actorRouter = require("./routes/actor");
 const { notFoundHandler } = require("./utils/helper");
 
 const app = express();
@@ -15,6 +16,11 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/api/user", userRouter);
+app.use("/api/actor", actorRouter);
+
+app.get("/home", (req, res) => {
+  res.json({ ok: "ok" });
+});
 
 app.use("/*", notFoundHandler);
 

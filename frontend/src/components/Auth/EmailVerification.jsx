@@ -5,7 +5,7 @@ import Container from "../Container";
 import FormContainer from "../form/FormContainer";
 import Submit from "../form/Submit";
 import Title from "../form/Title";
-import { verifyUserEmail } from "../../api/auth";
+import { resendEmailVerificationToken, verifyUserEmail } from "../../api/auth";
 import { useAuth, useNotification } from "../../hooks";
 
 const OTP_LENGTH = 6;
@@ -29,7 +29,8 @@ export default function EmailVerification() {
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
   const { isAuth, authInfo } = useAuth();
-  const { isLoggedIn } = authInfo;
+  const { isLoggedIn, profile } = authInfo;
+  const isverified = profile?.isverified;
   const { updateNotification } = useNotification();
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -87,7 +88,17 @@ export default function EmailVerification() {
 
     updateNotification("success", message);
     localStorage.setItem("auth-token", userResponse.token);
+    navigate("/");
     isAuth();
+  };
+
+  // OTP resend handler
+  const otpResendHandler = async () => {
+    const { error, message } = await resendEmailVerificationToken(user.id);
+
+    if (error) return updateNotification("error", error);
+
+    updateNotification("success", message);
   };
 
   // Use effects
@@ -97,8 +108,8 @@ export default function EmailVerification() {
 
   useEffect(() => {
     if (!user) navigate("/not-found");
-    if (isLoggedIn) navigate("/");
-  }, [user, isLoggedIn]);
+    if (isLoggedIn && isverified) navigate("/");
+  }, [user, isLoggedIn, isverified]);
 
   // Reder UI
   return (
@@ -128,7 +139,17 @@ export default function EmailVerification() {
             })}
           </div>
 
-          <Submit value="Verify Account" />
+          <div>
+            <Submit value="Verify Account" />
+            <button
+              type="button"
+              onClick={otpResendHandler}
+              className="dark:text-white text-blue-500 font-semibold
+             hover:underline mt-2"
+            >
+              I don't have OTP
+            </button>
+          </div>
         </form>
       </Container>
     </FormContainer>
