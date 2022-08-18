@@ -98,3 +98,27 @@ exports.update = async (req, res) => {
 
   res.status(201).json({ id: actor._id, name, about, gender, avatar: actor.avatar?.url });
 };
+
+// Delete an actor
+exports.remove = async (req, res) => {
+  const { actorId } = req.params;
+
+  if (!isValidObjectId(actorId)) sendError(res, "Invalid request.");
+
+  const actor = await Actor.findById(actorId);
+
+  if (!actor) sendError(res, "Invalid request, record not found.", 404);
+
+  const public_id = actor.avatar?.public_id;
+
+  // Remove old image if there is any
+
+  if (public_id) {
+    const { result } = await cloudinary.uploader.destroy(public_id);
+    if (result !== "ok") sendError("res", "Could not remove old image from cloud.");
+  }
+
+  await Actor.findByIdAndDelete(actorId);
+
+  res.json({ message: "Record removed successfully." });
+};
