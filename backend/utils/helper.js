@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const cloudinary = require("../cloud");
 
 exports.sendError = (res, error, satatusCode = 401) => {
   res.status(satatusCode).json({ error });
@@ -18,4 +19,33 @@ exports.generateRandomByte = () => {
 
 exports.notFoundHandler = (req, res) => {
   this.sendError(res, "Not Found", 404);
+};
+
+exports.uploadImageToCloud = async (file) => {
+  const { secure_url: url, public_id } = await cloudinary.uploader.upload(
+    file,
+    {
+      folder: "MovieMRI",
+      use_filename: true,
+    },
+    function (error, result) {
+      {
+        if (error) console.log(error);
+        if (result) return result;
+      }
+    },
+    {
+      gravity: "face",
+      height: 150,
+      width: 150,
+      crop: "thumb",
+    }
+  );
+
+  return { url, public_id };
+};
+
+exports.formatActor = (actor) => {
+  const { _id, name, about, gender, avatar } = actor;
+  return { id: _id, name, about, gender, avatar: avatar?.url };
 };

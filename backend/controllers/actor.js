@@ -1,53 +1,28 @@
 const { isValidObjectId } = require("mongoose");
-const { findOne, findById } = require("../models/Actor");
 const Actor = require("../models/Actor");
-const { sendError } = require("../utils/helper");
-const cloudinary = require("cloudinary").v2;
+const { sendError, uploadImageToCloud, formatActor } = require("../utils/helper");
+const cloudinary = require("../cloud");
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET,
-  secure: true,
-});
-
-// Create actor
-exports.create = async (req, res) => {
+// ########## Create actor
+exports.createActor = async (req, res) => {
   const { name, about, gender } = req.body;
   const { file } = req;
 
   const newActor = new Actor({ name, about, gender });
 
+  // Upload new image to cloud
   if (file) {
-    const { secure_url, public_id } = await cloudinary.uploader.upload(
-      file.path,
-      {
-        folder: "MovieMRI",
-        use_filename: true,
-      },
-      function (error, result) {
-        {
-          if (error) console.log(error);
-          if (result) return result;
-        }
-      },
-      {
-        gravity: "face",
-        height: 150,
-        width: 150,
-        crop: "thumb",
-      }
-    );
-    newActor.avatar = { url: secure_url, public_id };
+    const { url, public_id } = await uploadImageToCloud(file.path);
+    newActor.avatar = { url, public_id };
   }
 
   await newActor.save();
 
-  res.status(201).json({ id: newActor._id, name, about, gender, avatar: newActor.avatar?.url });
+  res.status(201).json(formatActor(actor));
 };
 
-// Update actor info
-exports.update = async (req, res) => {
+// ########## Update actor info
+exports.updateActor = async (req, res) => {
   const { name, about, gender } = req.body;
   const { file } = req;
   const { actorId } = req.params;
@@ -67,27 +42,10 @@ exports.update = async (req, res) => {
     if (result !== "ok") sendError("res", "Could not remove old image from cloud");
   }
 
+  // Upload new image to cloud
   if (file) {
-    const { secure_url, public_id } = await cloudinary.uploader.upload(
-      file.path,
-      {
-        folder: "MovieMRI",
-        use_filename: true,
-      },
-      function (error, result) {
-        {
-          if (error) console.log(error);
-          if (result) return result;
-        }
-      },
-      {
-        gravity: "face",
-        height: 150,
-        width: 150,
-        crop: "thumb",
-      }
-    );
-    actor.avatar = { url: secure_url, public_id };
+    const { url, public_id } = await uploadImageToCloud(file.path);
+    actor.avatar = { url, public_id };
   }
 
   actor.name = name;
@@ -96,11 +54,11 @@ exports.update = async (req, res) => {
 
   await actor.save();
 
-  res.status(201).json({ id: actor._id, name, about, gender, avatar: actor.avatar?.url });
+  res.status(201).json(formatActor(actor));
 };
 
-// Delete an actor
-exports.remove = async (req, res) => {
+// ########## Delete an actor
+exports.removeActor = async (req, res) => {
   const { actorId } = req.params;
 
   if (!isValidObjectId(actorId)) sendError(res, "Invalid request.");
@@ -121,4 +79,37 @@ exports.remove = async (req, res) => {
   await Actor.findByIdAndDelete(actorId);
 
   res.json({ message: "Record removed successfully." });
+};
+
+// ########## Search an actor
+exports.searchActor = async (req, res) => {
+  const { query } = req;
+
+  const result = await Actor.find({ $text: { $search: `"${query.name}"` } });
+
+  const actors = result.map((actor) => formatActor(actor));
+
+  res.json(actors);
+};
+
+// ########## Get all latest actor uploaded
+exports.getLatestActors = async (req, res) => {
+  const result = await Actor.find().sort({ createdAt: -1 }).limit(12);
+
+  const actors = result.map((actor) => formatActor(actor));
+
+  res.json(actors);
+};
+
+// Get single actor
+exports.getSingleActor = async (req, res) => {
+  const { actorId } = req.params;
+
+  if (!isValidObjectId(actorId)) sendError(res, "Invalid request.");
+
+  const actor = await Actor.findById(actorId);
+
+  if (!actor) sendError(res, "Invalid request, record not found.", 404);
+
+  res.json(formatActor(actor));
 };
