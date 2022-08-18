@@ -12,8 +12,7 @@ const imageFileFilter = (req, file, cb) => {
 
 const videoFileFilter = (req, file, cb) => {
   if (!file.mimetype.startsWith("video")) {
-    cb("Only image files are supported", false);
-    console.log(file);
+    cb("Only video files are supported", false);
   }
 
   cb(null, true);

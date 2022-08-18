@@ -9,9 +9,8 @@ const movieSchema = mongoose.Schema(
       required: true,
     },
 
-    title: {
+    language: {
       type: String,
-      trim: true,
       required: true,
     },
 
@@ -42,7 +41,7 @@ const movieSchema = mongoose.Schema(
       required: true,
     },
 
-    genre: {
+    genres: {
       type: [String],
       required: true,
       enum: genres,

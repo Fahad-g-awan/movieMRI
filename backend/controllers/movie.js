@@ -6,9 +6,10 @@ exports.uploadTrailer = async (req, res) => {
 
   if (!file) return sendError(res, "Video file is missing");
 
-  const videoRes = await cloudinary.uploader.upload(
+  const { secure_url: url, public_id } = await cloudinary.uploader.upload(
     file.path,
     {
+      resource_type: "video",
       folder: "MovieMRI_trailers",
       use_filename: true,
     },
@@ -20,5 +21,25 @@ exports.uploadTrailer = async (req, res) => {
     }
   );
 
-  res.json(videoRes);
+  res.json({ secure_url: url, public_id });
+};
+
+exports.createMovie = async (req, res) => {
+  const { file, body } = req;
+
+  const {
+    title,
+    storyLine,
+    director,
+    realeasDate,
+    status,
+    type,
+    tags,
+    genere,
+    cast,
+    writers,
+    poster,
+    trailer,
+    language,
+  } = body;
 };
