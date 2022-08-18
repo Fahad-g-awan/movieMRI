@@ -224,9 +224,9 @@ exports.signin = async (req, res) => {
 
   if (!isMatched) return sendError(res, "Email or password is incorrect");
 
-  const { _id, name, isVerified } = user;
+  const { _id, name, role, isVerified } = user;
 
   const jwtToken = await jwt.sign({ userId: _id }, process.env.JWT_SECRET);
 
-  res.status(201).json({ user: { id: _id, name, email, token: jwtToken, isVerified } });
+  res.status(201).json({ user: { id: _id, name, email, role, token: jwtToken, isVerified } });
 };
