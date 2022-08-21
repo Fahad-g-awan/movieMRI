@@ -25,7 +25,7 @@ exports.uploadImageToCloud = async (file) => {
   const { secure_url: url, public_id } = await cloudinary.uploader.upload(
     file,
     {
-      folder: "MovieMRI",
+      folder: "MovieMRI/movie_actors",
       use_filename: true,
     },
     function (error, result) {
