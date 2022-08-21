@@ -1,4 +1,6 @@
 const { check, validationResult } = require("express-validator");
+const { isValidObjectId } = require("mongoose");
+const genres = require("../utils/genres");
 
 exports.userValidator = [
   check("name").trim().not().isEmpty().withMessage("The name field is required"),
@@ -33,6 +35,74 @@ exports.actorValidator = [
   check("name").trim().not().isEmpty().withMessage("Actor name is required"),
   check("about").trim().not().isEmpty().withMessage("Actor about is required"),
   check("gender").trim().not().isEmpty().withMessage("Actor gender is required"),
+];
+
+exports.validateMovie = [
+  check("title").trim().not().isEmpty().withMessage("Movie title is required"),
+  check("storyLine").trim().not().isEmpty().withMessage("Movie story line is required"),
+  check("language").trim().not().isEmpty().withMessage("Movie language is required"),
+  check("releaseDate").isDate().isEmpty().withMessage("Movie release date is required"),
+  check("status")
+    .isIn(["public", "private"])
+    .withMessage("Moie status must be set to public or private"),
+  check("genres")
+    .isArray()
+    .withMessage("Movie genres must be of array type")
+    .custom((value) => {
+      for (let g of value) {
+        if (!genres.includes(g)) throw Error("Invalid genres");
+      }
+
+      return true;
+    }),
+  check("tags")
+    .isArray({ min: 1 })
+    .withMessage("Tags must be an array of strings")
+    .custom((value) => {
+      for (tag of value) {
+        if (typeof tag !== "string") throw Error("Tags must be an array of strings");
+      }
+
+      return true;
+    }),
+  check("cast")
+    .isArray()
+    .withMessage("Movie cast must be of array object")
+    .custom((value) => {
+      for (let c of value) {
+        if (!isValidObjectId(c.actor)) throw Error("Invalid cast id inside cast");
+        if (!c.roleAs?.trim()) throw Error("Cast role is missing");
+        if (typeof c.leadActor !== "boolean")
+          throw Error("Only boolean value is accepted for cast leadActor field");
+      }
+
+      return true;
+    }),
+  check("trailer")
+    .isObject()
+    .withMessage("Trailer field must be an object of url and public_id")
+    .custom(({ url, public_id }) => {
+      try {
+        const result = new URL(url);
+        if (!result.protocol.includes("http")) throw Error("Invalid trailer url");
+
+        const arr = url.split("/");
+        const publicId = arr[arr.length - 1].split(".")[0];
+
+        if (public_id !== publicId) {
+          throw Error("Trailer public_id is missing");
+        }
+      } catch (error) {
+        throw Error("Invalid trailer url");
+      }
+
+      return true;
+    }),
+  check("poster").custom((_, { req }) => {
+    if (!req.file) throw Error("movie poster field is missing");
+
+    return true;
+  }),
 ];
 
 exports.validate = (req, res, next) => {

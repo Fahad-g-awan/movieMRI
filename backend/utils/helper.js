@@ -49,3 +49,15 @@ exports.formatActor = (actor) => {
   const { _id, name, about, gender, avatar } = actor;
   return { id: _id, name, about, gender, avatar: avatar?.url };
 };
+
+exports.parseData = (req, res, next) => {
+  const { trailer, cast, writters, genres, tags } = req.body;
+
+  if (trailer) req.body.trailer = JSON.parse(trailer);
+  if (cast) req.body.cast = JSON.parse(cast);
+  if (writters) req.body.writters = JSON.parse(writters);
+  if (genres) req.body.genres = JSON.parse(genres);
+  if (tags) req.body.tags = JSON.parse(tags);
+
+  next();
+};
