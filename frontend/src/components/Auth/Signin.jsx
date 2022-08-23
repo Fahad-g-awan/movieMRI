@@ -55,12 +55,6 @@ export default function Signin() {
 
   const { email, password } = userInfo;
 
-  // UseEffect
-
-  useEffect(() => {
-    if (isLoggedIn) navigate("/");
-  }, [isLoggedIn]);
-
   // Render UI
 
   return (
