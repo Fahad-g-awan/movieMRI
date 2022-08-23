@@ -305,11 +305,11 @@ exports.removeMovie = async (req, res) => {
   }
 
   // Remove movie trailer from cloud
-  // const trailer = movie.trailer?.public_id;
-  // if (!trailer) return sendError(res, "Movie trailer not found on cloud");
+  const trailer = movie.trailer?.public_id;
+  if (!trailer) return sendError(res, "Movie trailer not found on cloud");
 
-  // const { result } = await cloudinary.uploader.destroy(trailer, { resource_type: "vidoe" });
-  // if (result !== "ok") return sendError(res, "Colud not remove movie trailer from cloud");
+  const { result } = await cloudinary.uploader.destroy(trailer, { resource_type: "vidoe" });
+  if (result !== "ok") return sendError(res, "Colud not remove movie trailer from cloud");
 
   await Movie.findByIdAndDelete(movieId);
 

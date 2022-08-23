@@ -8,7 +8,7 @@ import Signup from "./components/Auth/Signup";
 import Home from "./components/Home";
 import NotFound from "./components/NotFound";
 import Navbar from "./components/user/Navbar";
-import AdminNavigator from "./navigator/AminNavigator";
+import AdminNavigator from "./navigator/AdminNavigator";
 import { useAuth } from "./hooks";
 
 export default function App() {
