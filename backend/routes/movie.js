@@ -12,7 +12,9 @@ const { parseData } = require("../utils/helper");
 
 const router = express.Router();
 
+// Routes
 router.post("/upload-trailer", isAuth, isAdmin, uploadVideo.single("video"), uploadTrailer);
+
 router.post(
   "/create",
   isAuth,
@@ -23,6 +25,7 @@ router.post(
   validate,
   createMovie
 );
+
 router.patch(
   "/update-without-poster/:movieId",
   isAuth,
