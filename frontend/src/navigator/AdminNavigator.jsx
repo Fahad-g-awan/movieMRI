@@ -13,7 +13,11 @@ export default function AminNavigator() {
       <AdminNavbar />
 
       <div className="flex-1 p-2 max-w-screen-xl">
-        <Header />
+        <Header
+          onAddMovieClick={() => {
+            console.log("Adding movie");
+          }}
+        />
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/movies" element={<Movies />} />
