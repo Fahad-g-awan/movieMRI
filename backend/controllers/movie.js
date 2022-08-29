@@ -9,7 +9,7 @@ exports.uploadTrailer = async (req, res) => {
 
   if (!file) return sendError(res, "Video file is missing");
 
-  const { secure_url: url, public_id } = cloudinary.uploader.upload(
+  const { secure_url: url, public_id } = await cloudinary.uploader.upload(
     file.path,
     {
       resource_type: "video",

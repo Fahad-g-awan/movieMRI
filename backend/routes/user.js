@@ -30,7 +30,6 @@ router.post("/reset-password", validatePassword, validate, isValidPasswordToken,
 
 router.get("/is-auth", isAuth, (req, res) => {
   const { user } = req;
-  console.log(user);
   res.json({
     user: {
       id: user._id,
