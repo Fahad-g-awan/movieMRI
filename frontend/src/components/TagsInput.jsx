@@ -58,7 +58,7 @@ export default function TagsInput({ onChange, value }) {
   }, [value]);
 
   useEffect(() => {
-    input.current.scrollIntoView();
+    input.current.scrollIntoView(false);
   }, [tags]);
 
   // Main UI

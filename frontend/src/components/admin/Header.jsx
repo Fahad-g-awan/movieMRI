@@ -47,6 +47,11 @@ const CreateOptions = ({ options, visible, onClose }) => {
   const container = useRef();
   const containerID = "option-container";
 
+  const onClickHandler = (fn) => {
+    fn();
+    onClose();
+  };
+
   useEffect(() => {
     const handleClose = (e) => {
       if (!visible) return;
@@ -80,7 +85,7 @@ const CreateOptions = ({ options, visible, onClose }) => {
       onAnimationEnd={animationEndHandler}
     >
       {options.map(({ title, onClick }) => {
-        return <Option onClick={onClick}>{title}</Option>;
+        return <Option onClick={() => onClickHandler(onClick)}>{title}</Option>;
       })}
     </div>
   );
