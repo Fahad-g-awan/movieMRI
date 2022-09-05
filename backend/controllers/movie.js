@@ -41,7 +41,7 @@ exports.createMovie = async (req, res) => {
     tags,
     genres,
     cast,
-    writters,
+    writers,
     trailer,
     language,
   } = body;
@@ -69,11 +69,11 @@ exports.createMovie = async (req, res) => {
     if (!isValidObjectId(director)) return sendError(res, "Invalid director id");
     newMovie.director = director;
   }
-  if (writters) {
-    for (let writterId of writters) {
+  if (writers) {
+    for (let writterId of writers) {
       if (!isValidObjectId(writterId)) return sendError(res, "Invalid director id");
     }
-    newMovie.writters = writters;
+    newMovie.writers = writers;
   }
 
   // Uploading movie poster
@@ -146,7 +146,7 @@ exports.udateMovieWithPoster = async (req, res) => {
     tags,
     genres,
     cast,
-    writters,
+    writers,
     trailer,
     language,
   } = req.body;
@@ -172,11 +172,11 @@ exports.udateMovieWithPoster = async (req, res) => {
     if (!isValidObjectId(director)) return sendError(res, "Invalid director id");
     movie.director = director;
   }
-  if (writters) {
-    for (let writterId of writters) {
+  if (writers) {
+    for (let writterId of writers) {
       if (!isValidObjectId(writterId)) return sendError(res, "Invalid director id");
     }
-    movie.writters = writters;
+    movie.writers = writers;
   }
 
   // Updating poster
@@ -249,7 +249,7 @@ exports.udateMovieWithoutPoster = async (req, res) => {
     tags,
     genres,
     cast,
-    writters,
+    writers,
     trailer,
     language,
   } = req.body;
@@ -275,11 +275,11 @@ exports.udateMovieWithoutPoster = async (req, res) => {
     if (!isValidObjectId(director)) return sendError(res, "Invalid director id");
     movie.director = director;
   }
-  if (writters) {
-    for (let writterId of writters) {
+  if (writers) {
+    for (let writterId of writers) {
       if (!isValidObjectId(writterId)) return sendError(res, "Invalid director id");
     }
-    movie.writters = writters;
+    movie.writers = writers;
   }
   await movie.save();
 

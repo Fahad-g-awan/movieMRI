@@ -51,11 +51,11 @@ exports.formatActor = (actor) => {
 };
 
 exports.parseData = (req, res, next) => {
-  const { trailer, cast, writters, genres, tags } = req.body;
+  const { trailer, cast, writers, genres, tags } = req.body;
 
   if (trailer) req.body.trailer = JSON.parse(trailer);
   if (cast) req.body.cast = JSON.parse(cast);
-  if (writters) req.body.writters = JSON.parse(writters);
+  if (writers) req.body.writers = JSON.parse(writers);
   if (genres) req.body.genres = JSON.parse(genres);
   if (tags) req.body.tags = JSON.parse(tags);
 

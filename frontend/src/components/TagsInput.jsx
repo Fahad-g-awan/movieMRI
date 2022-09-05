@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 
-export default function TagsInput() {
+export default function TagsInput({ onChange, value }) {
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState([]);
 
@@ -13,6 +13,8 @@ export default function TagsInput() {
     const { value } = target;
 
     if (value !== ",") setTag(value);
+
+    onChange(tags);
   };
 
   // Key down handler for removing tag
@@ -31,7 +33,7 @@ export default function TagsInput() {
     }
   };
 
-  // Removing tag on click X
+  // Removing tag on clicking X
   const removeTag = (tagToRemove) => {
     const newTags = tags.filter((tag) => tag !== tagToRemove);
     setTags([...newTags]);
@@ -50,6 +52,11 @@ export default function TagsInput() {
   };
 
   //UseEffect Hook
+
+  useEffect(() => {
+    if (value.length) setTags(value);
+  }, [value]);
+
   useEffect(() => {
     input.current.scrollIntoView();
   }, [tags]);
