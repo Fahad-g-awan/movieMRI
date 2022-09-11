@@ -85,7 +85,11 @@ const CreateOptions = ({ options, visible, onClose }) => {
       onAnimationEnd={animationEndHandler}
     >
       {options.map(({ title, onClick }) => {
-        return <Option onClick={() => onClickHandler(onClick)}>{title}</Option>;
+        return (
+          <Option key={title} onClick={() => onClickHandler(onClick)}>
+            {title}
+          </Option>
+        );
       })}
     </div>
   );

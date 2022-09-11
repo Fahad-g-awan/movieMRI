@@ -269,6 +269,7 @@ export default function MovieForm() {
         <div className="w-[30%] space-y-5">
           <PosterSelector
             name="poster"
+            label="Select Poster"
             onChange={changeHandler}
             selectedPoster={selectedPosterForUI}
             accept="image/jpg, image/jpej, image/png"
@@ -281,21 +282,21 @@ export default function MovieForm() {
             value={type}
             name="type"
             options={typeOptions}
-            lable="Type"
+            label="Type"
           />
           <Selector
             onChange={changeHandler}
             value={language}
             name="language"
             options={languageOptions}
-            lable="Language"
+            label="Language"
           />
           <Selector
             onChange={changeHandler}
             value={status}
             name="status"
             options={statusOptions}
-            lable="Status"
+            label="Status"
           />
         </div>
       </div>
