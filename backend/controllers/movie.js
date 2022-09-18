@@ -13,7 +13,6 @@ exports.uploadTrailer = async (req, res) => {
     file.path,
     {
       resource_type: "video",
-      folder: "MovieMRI/MovieMRI_trailers",
       use_filename: true,
     },
     function (error, result) {
@@ -65,7 +64,7 @@ exports.createMovie = async (req, res) => {
     language,
   });
 
-  if (director) {
+  if (director.length) {
     if (!isValidObjectId(director)) return sendError(res, "Invalid director id");
     newMovie.director = director;
   }
@@ -77,44 +76,46 @@ exports.createMovie = async (req, res) => {
   }
 
   // Uploading movie poster
-  const {
-    secure_url: url,
-    public_id,
-    responsive_breakpoints,
-  } = await cloudinary.uploader.upload(
-    file.path,
-    {
-      transformation: {
-        width: 1280,
-        height: 720,
-      },
-      responsive_breakpoints: {
-        create_derived: true,
-        max_width: 640,
-        max_image: 3,
-      },
-      folder: "MovieMRI/movie_posters",
-      use_filename: true,
-    },
-    function (error, result) {
+  if (file) {
+    const {
+      secure_url: url,
+      public_id,
+      responsive_breakpoints,
+    } = await cloudinary.uploader.upload(
+      file.path,
       {
-        if (error) console.log(error);
-        if (result) return result;
+        transformation: {
+          width: 1280,
+          height: 720,
+        },
+        responsive_breakpoints: {
+          create_derived: true,
+          max_width: 640,
+          max_image: 3,
+        },
+        folder: "MovieMRI/movie_posters",
+        use_filename: true,
+      },
+      function (error, result) {
+        {
+          if (error) console.log(error);
+          if (result) return result;
+        }
+      }
+    );
+
+    const finalPoster = { url, public_id, responsive: [] };
+    const { breakpoints } = responsive_breakpoints[0];
+
+    if (breakpoints.length) {
+      for (let imgObg of breakpoints) {
+        const secure_url = imgObg;
+        finalPoster.responsive.push(secure_url);
       }
     }
-  );
-
-  const finalPoster = { url, public_id, responsive: [] };
-  const { breakpoints } = responsive_breakpoints[0];
-
-  if (breakpoints.length) {
-    for (let imgObg of breakpoints) {
-      const secure_url = imgObg;
-      finalPoster.responsive.push(secure_url);
-    }
+    newMovie.poster = finalPoster;
   }
 
-  newMovie.poster = finalPoster;
   await newMovie.save();
 
   res.status(201).json({

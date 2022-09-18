@@ -84,6 +84,7 @@ exports.validateMovie = [
     .custom(({ url, public_id }) => {
       try {
         const result = new URL(url);
+
         if (!result.protocol.includes("http")) throw Error("Invalid trailer url");
 
         const arr = url.split("/");
@@ -93,7 +94,7 @@ exports.validateMovie = [
           throw Error("Trailer public_id is missing");
         }
       } catch (error) {
-        throw Error("Invalid trailer url");
+        throw Error(error);
       }
 
       return true;

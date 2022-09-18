@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { AiOutlineCloudUpload } from "react-icons/ai";
-import { uploadTrailer } from "../../api/movie";
+import { uploadMovie, uploadTrailer } from "../../api/movie";
 import { useNotification } from "../../hooks";
 import ModalContainer from "../modals/ModalContainer";
 import MovieForm from "./MovieForm";
@@ -12,23 +12,7 @@ export default function MovieUpload({ visible, onClose }) {
   const [videoUploaded, setVideoUploaded] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoInfo, setVideoInfo] = useState({});
-  const [movieInfo, setMovieInfo] = useState({
-    title: "",
-    storyLine: "",
-    tags: [],
-    cast: [],
-    directors: {},
-    writters: [],
-    releaseDate: "",
-    poster: null,
-    type: "",
-    language: "",
-    status: "",
-    trailer: {
-      url: "",
-      public_id: "",
-    },
-  });
+  const [busy, setBusy] = useState(false);
 
   const { updateNotification } = useNotification();
 
@@ -64,21 +48,38 @@ export default function MovieUpload({ visible, onClose }) {
     return `Uploading progress ${uploadProgress}%`;
   };
 
+  const submitHandler = async (data) => {
+    if (!videoInfo.url || !videoInfo.public_id)
+      updateNotification("error", "Movie trailer is missing");
+
+    setBusy(true);
+    data.append("trailer", JSON.stringify(videoInfo));
+    const res = await uploadMovie(data);
+    setBusy(false);
+
+    console.log(res);
+    onClose();
+  };
+
   // Main UI
   return (
-    <ModalContainer visible={visible} onClose={onClose}>
-      {/* <UploadProgress
+    <ModalContainer visible={visible}>
+      <div className="mb-5">
+        <UploadProgress
           visible={!videoUploaded && videoSelected}
           message={getUploadProgressValue()}
           width={uploadProgress}
         />
+      </div>
+      {!videoSelected ? (
         <TrailerUploader
           visible={!videoSelected}
           handleChange={changeHandler}
           onTypeError={typeErrorHandler}
-        /> */}
-
-      <MovieForm />
+        />
+      ) : (
+        <MovieForm busy={busy} onSubmit={!busy ? submitHandler : null} />
+      )}
     </ModalContainer>
   );
 }

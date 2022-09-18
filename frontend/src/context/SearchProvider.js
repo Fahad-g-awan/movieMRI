@@ -1,7 +1,7 @@
 import React, { createContext, useState } from "react";
 import { useNotification } from "../hooks";
 
-const SearchContet = createContext();
+export const SearchContet = createContext();
 
 let timeOutId;
 
@@ -21,7 +21,7 @@ export default function SearchProvider({ children }) {
 
   const { updateNotification } = useNotification();
 
-  const search = async (method, query) => {
+  const search = async (method, query, updaterFunc) => {
     const { error, results } = await method(query);
 
     if (error) return updateNotification("error", error);
@@ -29,24 +29,32 @@ export default function SearchProvider({ children }) {
     if (!results.length) return setResultNotFound(true);
 
     setResults(results);
+    updaterFunc && updaterFunc([...results]);
   };
 
   const debounceFunc = debounce(search, 500);
 
-  const handleSearch = (method, query) => {
+  const handleSearch = (method, query, updaterFunc) => {
     setSearching(true);
 
-    if (!query.trime()) {
-      setSearching(false);
-      setResults([]);
-      setResultNotFound(false);
+    if (!query.trim()) {
+      updaterFunc && updaterFunc([]);
+      resetSearch();
     }
 
-    debounceFunc(method, query);
+    debounceFunc(method, query, updaterFunc);
+  };
+
+  const resetSearch = () => {
+    setSearching(false);
+    setResults([]);
+    setResultNotFound(false);
   };
 
   return (
-    <SearchContet.Provider value={{ handleSearch, searching, results, resultNotFound }}>
+    <SearchContet.Provider
+      value={{ handleSearch, resetSearch, searching, results, resultNotFound }}
+    >
       {children}
     </SearchContet.Provider>
   );
