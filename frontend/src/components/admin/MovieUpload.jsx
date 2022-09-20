@@ -63,7 +63,7 @@ export default function MovieUpload({ visible, onClose }) {
 
   // Main UI
   return (
-    <ModalContainer visible={visible}>
+    <ModalContainer visible={visible} onClose={onClose}>
       <div className="mb-5">
         <UploadProgress
           visible={!videoUploaded && videoSelected}
