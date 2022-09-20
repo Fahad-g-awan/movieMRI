@@ -35,3 +35,18 @@ export const uploadMovie = async (formData) => {
     return catchError(error);
   }
 };
+
+export const getMovies = async (limit, pageNo) => {
+  const token = getToken();
+  try {
+    const { data } = await client(`/movie/movies?limit=${limit}&pageNo=${pageNo}`, {
+      headers: {
+        authorization: "Bearer " + token,
+        "content-type": "multipart/form-data",
+      },
+    });
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};

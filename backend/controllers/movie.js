@@ -316,3 +316,24 @@ exports.removeMovie = async (req, res) => {
 
   res.status(201).json({ message: "Movie removed successfully" });
 };
+
+exports.getMovies = async (req, res) => {
+  const { limit = 10, pageNo = 0 } = req.query;
+
+  const movies = await Movie.find({})
+    .sort({ createdAt: -1 })
+    .skip(parseInt(limit) * parseInt(pageNo))
+    .limit(parseInt(limit));
+
+  const results = movies.map((m) => {
+    return {
+      id: m._id,
+      title: m.title,
+      poster: m.poster?.url,
+      genres: m.genres,
+      status: m.status,
+    };
+  });
+
+  res.json({ movies: results });
+};
