@@ -34,19 +34,18 @@ export default function AminNavigator() {
       <div className="flex dark:bg-primary bg-white">
         <AdminNavbar />
 
-        <div className="flex-1 p-2">
+        <div className="flex-1 max-w-screen-xl">
           <Header
             onAddMovieClick={displayMovieUploadModal}
             onAddActorClick={displayActorUploadModal}
           />
-          <div className="max-w-screen-xl">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/movies" element={<Movies />} />
-              <Route path="/actors" element={<Actors />} />
-              <Route path="/*" element={<NotFound />} />
-            </Routes>
-          </div>
+
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/movies" element={<Movies />} />
+            <Route path="/actors" element={<Actors />} />
+            <Route path="/*" element={<NotFound />} />
+          </Routes>
         </div>
       </div>
 

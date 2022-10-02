@@ -2,8 +2,11 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { BsTrash, BsPencilSquare } from "react-icons/bs";
-import { getActors } from "../../api/actor";
-import { useNotification } from "../../hooks";
+import { getActors, searchActor } from "../../api/actor";
+import { useNotification, useSearch } from "../../hooks";
+import AppSearchForm from "../form/AppSearchForm";
+import UpdateActor from "../modals/UpdateActor";
+import NotFoundText from "../NotFoundText";
 import PrevAndNextButtons from "../PrevAndNextButtons";
 
 let currentPageNo = 0;
@@ -11,9 +14,13 @@ let limit = 20;
 
 export default function Actors() {
   const [actors, setActors] = useState([]);
+  const [results, setResults] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [selectedProfile, SetSelectedProfile] = useState(null);
 
   const { updateNotification } = useNotification();
+  const { handleSearch, resetSearch, resultNotFound } = useSearch();
 
   const fetchActors = async (pageNo) => {
     const { profiles, error } = await getActors(limit, pageNo);
@@ -40,28 +47,98 @@ export default function Actors() {
     fetchActors(currentPageNo);
   };
 
+  const handleOnEditClick = (actor) => {
+    setShowUpdateModal(true);
+    SetSelectedProfile(actor);
+  };
+
+  const handleOnDeleteClick = () => {};
+
+  const handleOnUpdateActor = (profile) => {
+    const updatedActors = actors.map((actor) => {
+      if (profile.id === actor.id) {
+        return profile;
+      }
+      return actor;
+    });
+
+    setActors([...updatedActors]);
+  };
+
+  const hideUpdateModal = () => {
+    setShowUpdateModal(false);
+  };
+
+  const handleOnSearchSubmit = (value) => {
+    handleSearch(searchActor, value, setResults);
+  };
+
+  const handleOnSearchFormReset = () => {
+    resetSearch();
+    setResults([]);
+  };
+
   useEffect(() => {
-    fetchActors();
+    fetchActors(currentPageNo);
   }, []);
 
   return (
-    <div className="p-5">
-      <div className="grid grid-cols-4 gap-5">
-        {actors.map((actor) => {
-          return <ActorProfile key={actor.id} profile={actor} />;
-        })}
+    <>
+      <div className="p-5">
+        <div className="flex justify-end">
+          <AppSearchForm
+            onSubmit={handleOnSearchSubmit}
+            placeholder="Search Actors..."
+            showRestIcon={results.length || resultNotFound}
+            onReset={handleOnSearchFormReset}
+          />
+        </div>
+        <NotFoundText text="No results found" visible={resultNotFound} />
+
+        <div className="grid grid-cols-4 gap-5">
+          {results.length || resultNotFound
+            ? results.map((actor) => {
+                return (
+                  <ActorProfile
+                    key={actor.id}
+                    profile={actor}
+                    onEditClick={() => handleOnEditClick(actor)}
+                    onDeleteClick={handleOnDeleteClick}
+                  />
+                );
+              })
+            : actors.map((actor) => {
+                return (
+                  <ActorProfile
+                    key={actor.id}
+                    profile={actor}
+                    onEditClick={() => handleOnEditClick(actor)}
+                    onDeleteClick={handleOnDeleteClick}
+                  />
+                );
+              })}
+        </div>
+
+        {!results.length && !resultNotFound ? (
+          <PrevAndNextButtons
+            className="mt-5"
+            onPrevClick={handleOnPrevClick}
+            onNextClick={handleOnNextClick}
+          />
+        ) : null}
       </div>
 
-      <PrevAndNextButtons
-        className="mt-5"
-        onPrevClick={handleOnPrevClick}
-        onNextClick={handleOnNextClick}
+      <UpdateActor
+        visible={showUpdateModal}
+        onClose={hideUpdateModal}
+        initialState={selectedProfile}
+        onSuccess={handleOnUpdateActor}
       />
-    </div>
+    </>
   );
 }
 
-const ActorProfile = ({ profile }) => {
+const ActorProfile = ({ profile, onEditClick, onDeleteClick }) => {
   const [showOptions, setShowOptions] = useState(false);
 
   const acceptedNameLength = 15;
@@ -95,16 +172,18 @@ const ActorProfile = ({ profile }) => {
           <h1 className="text-xl text-primary dark:text-white font-semibold whitespace-nowrap">
             {formatName(name)}
           </h1>
-          <p className="text-primary dark:text-white opacity-70">{about.substring(0, 50)}...</p>
+          <p className="text-primary dark:text-white opacity-70">
+            {about.substring(0, 25) + "..."}
+          </p>
         </div>
 
-        <ShowOptions visible={showOptions} />
+        <Options visible={showOptions} onDeleteClick={onDeleteClick} onEditClick={onEditClick} />
       </div>
     </div>
   );
 };
 
-const ShowOptions = ({ visible, onDeleteClick, onEditClick }) => {
+const Options = ({ visible, onDeleteClick, onEditClick }) => {
   if (!visible) return null;
 
   return (

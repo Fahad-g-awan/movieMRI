@@ -26,8 +26,12 @@ export default function SearchProvider({ children }) {
 
     if (error) return updateNotification("error", error);
 
-    if (!results.length) return setResultNotFound(true);
-
+    if (!results.length) {
+      setResults("");
+      updaterFunc && updaterFunc([]);
+      return setResultNotFound(true);
+    }
+    setResultNotFound(false);
     setResults(results);
     updaterFunc && updaterFunc([...results]);
   };
@@ -39,7 +43,7 @@ export default function SearchProvider({ children }) {
 
     if (!query.trim()) {
       updaterFunc && updaterFunc([]);
-      resetSearch();
+      return resetSearch();
     }
 
     debounceFunc(method, query, updaterFunc);

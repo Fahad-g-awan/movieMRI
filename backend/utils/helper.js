@@ -18,7 +18,7 @@ exports.generateRandomByte = () => {
 };
 
 exports.notFoundHandler = (req, res) => {
-  this.sendError(res, "Not Found", 404);
+  this.sendError(res, "Route/URL not Found", 404);
 };
 
 exports.uploadImageToCloud = async (file) => {

@@ -54,7 +54,7 @@ exports.updateActor = async (req, res) => {
 
   await actor.save();
 
-  res.status(201).json(formatActor(actor));
+  res.status(201).json({ actor: formatActor(actor) });
 };
 
 // ########## Delete an actor
@@ -83,9 +83,12 @@ exports.removeActor = async (req, res) => {
 
 // ########## Search an actor
 exports.searchActor = async (req, res) => {
-  const { query } = req;
+  const { name } = req.query;
 
-  const result = await Actor.find({ $text: { $search: `"${query.name}"` } });
+  // const result = await Actor.find({ $text: { $search: `"${query.name}"` } });
+  if (!name.trim()) return sendError(res, "Please add text");
+
+  const result = await Actor.find({ name: { $regex: name, $options: "i" } });
 
   const actors = result.map((actor) => formatActor(actor));
 

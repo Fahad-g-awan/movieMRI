@@ -23,7 +23,7 @@ router.post(
   validate,
   createActor
 );
-router.patch(
+router.post(
   "/update/:actorId",
   isAuth,
   isAdmin,
