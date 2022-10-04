@@ -2,8 +2,9 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { BsTrash, BsPencilSquare } from "react-icons/bs";
-import { getActors, searchActor } from "../../api/actor";
+import { deleteActor, getActors, searchActor } from "../../api/actor";
 import { useNotification, useSearch } from "../../hooks";
+import ConfirmModa from "../modals/ConfirmModal";
 import AppSearchForm from "../form/AppSearchForm";
 import UpdateActor from "../modals/UpdateActor";
 import NotFoundText from "../NotFoundText";
@@ -17,7 +18,9 @@ export default function Actors() {
   const [results, setResults] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedProfile, SetSelectedProfile] = useState(null);
+  const [busy, setBusy] = useState(false);
 
   const { updateNotification } = useNotification();
   const { handleSearch, resetSearch, resultNotFound } = useSearch();
@@ -52,7 +55,10 @@ export default function Actors() {
     SetSelectedProfile(actor);
   };
 
-  const handleOnDeleteClick = () => {};
+  const handleOnDeleteClick = (actor) => {
+    SetSelectedProfile(actor);
+    setShowConfirmModal(true);
+  };
 
   const handleOnUpdateActor = (profile) => {
     const updatedActors = actors.map((actor) => {
@@ -76,6 +82,23 @@ export default function Actors() {
   const handleOnSearchFormReset = () => {
     resetSearch();
     setResults([]);
+  };
+
+  const hideConfirmModal = () => {
+    setShowConfirmModal(false);
+  };
+
+  const handleOnConfirmDelete = async () => {
+    setBusy(true);
+    const { error, message } = await deleteActor(selectedProfile.id);
+    setBusy(false);
+
+    if (error) return updateNotification("error", message);
+    updateNotification("success", message);
+
+    hideConfirmModal();
+
+    fetchActors(currentPageNo);
   };
 
   useEffect(() => {
@@ -103,7 +126,7 @@ export default function Actors() {
                     key={actor.id}
                     profile={actor}
                     onEditClick={() => handleOnEditClick(actor)}
-                    onDeleteClick={handleOnDeleteClick}
+                    onDeleteClick={() => handleOnDeleteClick(actor)}
                   />
                 );
               })
@@ -113,7 +136,7 @@ export default function Actors() {
                     key={actor.id}
                     profile={actor}
                     onEditClick={() => handleOnEditClick(actor)}
-                    onDeleteClick={handleOnDeleteClick}
+                    onDeleteClick={() => handleOnDeleteClick(actor)}
                   />
                 );
               })}
@@ -127,6 +150,15 @@ export default function Actors() {
           />
         ) : null}
       </div>
+
+      <ConfirmModa
+        visible={showConfirmModal}
+        title="Are you sure?"
+        onConfirm={handleOnConfirmDelete}
+        onCancel={hideConfirmModal}
+        busy={busy}
+        subtitle="This action will delete profile permanently"
+      />
 
       <UpdateActor
         visible={showUpdateModal}
