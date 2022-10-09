@@ -5,6 +5,7 @@ const {
   udateMovieWithoutPoster,
   removeMovie,
   getMovies,
+  getMovieForUpdate,
 } = require("../controllers/movie");
 const { isAuth, isAdmin } = require("../middlewares/auth");
 const { uploadVideo, uploadImage } = require("../middlewares/multer");
@@ -48,5 +49,6 @@ router.patch(
 );
 router.delete("/delete/:movieId", isAuth, isAdmin, removeMovie);
 router.get("/movies", isAuth, isAdmin, getMovies);
+router.get("/for-update/:movieId", isAuth, isAdmin, getMovieForUpdate);
 
 module.exports = router;

@@ -17,6 +17,7 @@ import WriterSelector from "./WriterSelector";
 import ViewAllBtn from "../ViewAllBtn";
 import LabelWithBadge from "./LabelWithBadge";
 import { validateMovie } from "../../utils/validator";
+import { useEffect } from "react";
 
 const defaultMovieInfo = {
   title: "",
@@ -33,7 +34,7 @@ const defaultMovieInfo = {
   status: "",
 };
 
-export default function MovieForm({ onSubmit, busy }) {
+export default function MovieForm({ onSubmit, busy, initialState }) {
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
   const [showWritersModal, setShowWritersModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
@@ -171,7 +172,19 @@ export default function MovieForm({ onSubmit, busy }) {
     onSubmit(formData);
   };
 
-  const { title, storyLine, writers, cast, tags, genres, type, language, status } = movieInfo;
+  useEffect(() => {
+    if (initialState) {
+      setMovieInfo({
+        ...initialState,
+        releaseDate: initialState.releaseDate.split("T")[0],
+        poster: null,
+      });
+      setSelectedPosterForUI(initialState.poster);
+    }
+  }, [initialState]);
+
+  const { title, storyLine, writers, cast, tags, genres, type, language, status, releaseDate } =
+    movieInfo;
 
   return (
     <>
@@ -236,6 +249,7 @@ export default function MovieForm({ onSubmit, busy }) {
             name="releaseDate"
             onChange={changeHandler}
             className={commonInputClasses + " border-2 rounded p-1 w-auto"}
+            value={releaseDate}
           />
 
           <Submit busy={busy} type="button" value="Upload" onClick={handleSubmit} />

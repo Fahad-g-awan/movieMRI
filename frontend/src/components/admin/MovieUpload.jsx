@@ -56,8 +56,6 @@ export default function MovieUpload({ visible, onClose }) {
     data.append("trailer", JSON.stringify(videoInfo));
     const res = await uploadMovie(data);
     setBusy(false);
-
-    console.log(res);
     onClose();
   };
 

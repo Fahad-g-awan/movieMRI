@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { getMovies } from "../../api/movie";
+import { getMovieForUodate, getMovies } from "../../api/movie";
 import { useNotification } from "../../hooks";
+import UpdateMovie from "../modals/UpdateMovie";
 import MovieListItem from "../MovieListItem";
 import PrevAndNextButtons from "../PrevAndNextButtons";
 
@@ -11,6 +12,8 @@ let limit = 10;
 export default function Movies() {
   const [movies, setMovies] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
+  const [showUpdateMovieModal, setShowUpdateMovieModal] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   const { updateNotification } = useNotification();
 
@@ -39,21 +42,46 @@ export default function Movies() {
     fetchMovies(currentPageNo);
   };
 
+  const handleOnEditClick = async ({ id }) => {
+    const { error, movie } = await getMovieForUodate(id);
+    setSelectedMovie(movie);
+    if (error) updateNotification("error", error);
+    setShowUpdateMovieModal(true);
+  };
+
+  const handleHideMovieUpdateModal = () => {
+    setShowUpdateMovieModal(false);
+  };
+
   useEffect(() => {
     fetchMovies();
   }, []);
 
   return (
-    <div className="space-y-5 p-5">
-      {movies.map((movie) => {
-        return <MovieListItem key={movie.id} movie={movie} />;
-      })}
+    <>
+      <div className="space-y-5 p-5">
+        {movies.map((movie) => {
+          return (
+            <MovieListItem
+              key={movie.id}
+              movie={movie}
+              onEditClick={() => handleOnEditClick(movie)}
+            />
+          );
+        })}
 
-      <PrevAndNextButtons
-        className="mt-5"
-        onPrevClick={handleOnPrevClick}
-        onNextClick={handleOnNextClick}
+        <PrevAndNextButtons
+          className="mt-5"
+          onPrevClick={handleOnPrevClick}
+          onNextClick={handleOnNextClick}
+        />
+      </div>
+
+      <UpdateMovie
+        visible={showUpdateMovieModal}
+        initialState={selectedMovie}
+        onClose={handleHideMovieUpdateModal}
       />
-    </div>
+    </>
   );
 }
