@@ -64,3 +64,46 @@ export const getMovieForUodate = async (id) => {
     return catchError(error);
   }
 };
+
+export const updateMovie = async (id, formDate) => {
+  const token = getToken();
+  try {
+    const { data } = await client.patch(`/movie/update/${id}`, formDate, {
+      headers: {
+        authorization: "Bearer " + token,
+        "content-type": "multipart/form-data",
+      },
+    });
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
+
+export const deleteMovie = async (id) => {
+  const token = getToken();
+  try {
+    const { data } = await client.delete(`/movie/delete/${id}`, {
+      headers: {
+        authorization: "Bearer " + token,
+      },
+    });
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
+
+export const searchMovieForAdmin = async (title) => {
+  const token = getToken();
+  try {
+    const { data } = await client(`/movie/search?title=${title}`, {
+      headers: {
+        authorization: "Bearer " + token,
+      },
+    });
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};

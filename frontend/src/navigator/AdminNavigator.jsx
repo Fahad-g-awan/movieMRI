@@ -9,6 +9,7 @@ import Movies from "../components/admin/Movies";
 import MovieUpload from "../components/admin/MovieUpload";
 import ActorUpload from "../components/admin/ActorUpload";
 import NotFound from "../components/NotFound";
+import SearchMovies from "../components/Auth/SearchMovies";
 
 export default function AminNavigator() {
   const [showMovieUploadModal, setShowMovieUploadModal] = useState(false);
@@ -44,6 +45,7 @@ export default function AminNavigator() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/movies" element={<Movies />} />
             <Route path="/actors" element={<Actors />} />
+            <Route path="/search" element={<SearchMovies />} />
             <Route path="/*" element={<NotFound />} />
           </Routes>
         </div>

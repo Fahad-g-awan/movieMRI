@@ -125,11 +125,11 @@ exports.createMovie = async (req, res) => {
 };
 
 // Update movie with poster
-exports.udateMovieWithPoster = async (req, res) => {
+exports.updateMovie = async (req, res) => {
   const { movieId } = req.params;
   const { file } = req;
 
-  if (!file) return sendError(res, "Movie poster is missing");
+  // if (!file) return sendError(res, "Movie poster is missing");
 
   if (!isValidObjectId(movieId)) sendError(res, "Invalid movie id");
 
@@ -165,7 +165,6 @@ exports.udateMovieWithPoster = async (req, res) => {
   movie.status = status;
   movie.cast = cast;
   movie.language = language;
-  movie.trailer = trailer;
   movie.genres = genres;
   movie.releaseDate = releaseDate;
 
@@ -182,52 +181,62 @@ exports.udateMovieWithPoster = async (req, res) => {
 
   // Updating poster
 
-  const posterId = movie.poster?.public_id;
+  if (file) {
+    // Removing old poster form cloud
+    const { public_id } = movie.poster?.public_id;
+    if ({ public_id }) {
+      const { result } = await cloudinary.uploader.destroy({ public_id });
+      if (result !== "ok") return sendError(res, "Colud not remove poster from cloud");
+    }
 
-  // Removing old poster form cloud
-  if (posterId) {
-    const { result } = await cloudinary.uploader.destroy(posterId);
-    if (result !== "ok") return sendError(res, "Colud not remove poster from cloud");
-  }
-
-  await cloudinary.uploader.upload(
-    file.path,
-    {
-      transformation: {
-        width: 1280,
-        height: 720,
-      },
-      responsive_breakpoints: {
-        create_derived: true,
-        max_width: 640,
-        max_image: 3,
-      },
-      folder: "MovieMRI/movie_posters",
-      use_filename: true,
-    },
-    function (error, result) {
+    await cloudinary.uploader.upload(
+      file.path,
       {
-        if (error) console.log(error);
-        if (result) return result;
+        transformation: {
+          width: 1280,
+          height: 720,
+        },
+        responsive_breakpoints: {
+          create_derived: true,
+          max_width: 640,
+          max_image: 3,
+        },
+        folder: "MovieMRI/movie_posters",
+        use_filename: true,
+      },
+      function (error, result) {
+        {
+          if (error) console.log(error);
+          if (result) return result;
+        }
+      }
+    );
+
+    const finalPoster = { url, public_id, responsive: [] };
+    const { breakpoints } = responsive_breakpoints[0];
+
+    if (breakpoints.length) {
+      for (let imgObg of breakpoints) {
+        const secure_url = imgObg;
+        finalPoster.responsive.push(secure_url);
       }
     }
-  );
 
-  const finalPoster = { url, public_id, responsive: [] };
-  const { breakpoints } = responsive_breakpoints[0];
-
-  if (breakpoints.length) {
-    for (let imgObg of breakpoints) {
-      const secure_url = imgObg;
-      finalPoster.responsive.push(secure_url);
-    }
+    movie.poster = finalPoster;
   }
-
-  movie.poster = finalPoster;
 
   await movie.save();
 
-  res.status(201).json({ message: "Movie has been update successfully", movie });
+  res.status(201).json({
+    message: "Movie has been update successfully",
+    movie: {
+      id: movie.id,
+      title: movie.title,
+      poster: movie.poster?.url,
+      genres: movie.genres,
+      statue: movie.status,
+    },
+  });
 };
 
 // Update movie without poster
@@ -305,11 +314,12 @@ exports.removeMovie = async (req, res) => {
     if (result !== "ok") return sendError(res, "Colud not remove movie poster from cloud");
   }
 
+  console.log("BACkEND");
   // Remove movie trailer from cloud
   const trailer = movie.trailer?.public_id;
   if (!trailer) return sendError(res, "Movie trailer not found on cloud");
 
-  const { result } = await cloudinary.uploader.destroy(trailer, { resource_type: "vidoe" });
+  const { result } = await cloudinary.uploader.destroy(trailer, { resource_type: "video" });
   if (result !== "ok") return sendError(res, "Colud not remove movie trailer from cloud");
 
   await Movie.findByIdAndDelete(movieId);
@@ -368,5 +378,25 @@ exports.getMovieForUpdate = async (req, res) => {
         };
       }),
     },
+  });
+};
+
+exports.searchMovies = async (req, res) => {
+  const { title } = req.query;
+
+  if (!title.trim()) return sendError(res, "Invalid Request");
+
+  const movies = await Movie.find({ title: { $regex: title, $options: "i" } });
+
+  res.json({
+    results: movies.map((m) => {
+      return {
+        id: m._id,
+        title: m.title,
+        poster: m.poster?.url,
+        genres: m.genres,
+        status: m.status,
+      };
+    }),
   });
 };
