@@ -1,13 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { createContext, useState } from "react";
 import { getMovies } from "../api/movie";
 import { useNotification } from "../hooks";
 
-export const MovieContext = useContext();
+export const MovieContext = createContext();
 
 let currentPageNo = 0;
 let limit = 10;
 
-export default function MoviesProvider(children) {
+export default function MoviesProvider({ children }) {
   const [movies, setMovies] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
 
@@ -39,8 +39,8 @@ export default function MoviesProvider(children) {
   };
 
   return (
-    <MovieContext.MoviesProvider value={{ movies, fetchMovies, fetchNextPage, fetchPreviousPage }}>
+    <MovieContext.Provider value={{ movies, fetchMovies, fetchNextPage, fetchPreviousPage }}>
       {children}
-    </MovieContext.MoviesProvider>
+    </MovieContext.Provider>
   );
 }

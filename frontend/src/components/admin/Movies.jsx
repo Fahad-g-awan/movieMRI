@@ -19,7 +19,7 @@ export default function Movies() {
   const [selectedMovie, setSelectedMovie] = useState(null);
 
   const { updateNotification } = useNotification();
-  const { fetchMovies } = useMovies();
+  const { fetchMovies, movies: newMovies, fetchNextPage, fetchPreviousPage } = useMovies();
 
   // const fetchMovies = async (pageNo) => {
   //   const { movies, error } = await getMovies(limit, pageNo);
@@ -33,18 +33,18 @@ export default function Movies() {
   //   setMovies([...movies]);
   // };
 
-  const handleOnNextClick = () => {
-    if (reachedToEnd) return;
-    currentPageNo += 1;
-    fetchMovies(currentPageNo);
-  };
+  // const handleOnNextClick = () => {
+  //   if (reachedToEnd) return;
+  //   currentPageNo += 1;
+  //   fetchMovies(currentPageNo);
+  // };
 
-  const handleOnPrevClick = () => {
-    if (currentPageNo <= 0) return;
-    if (reachedToEnd) setReachedToEnd(false);
-    currentPageNo -= 1;
-    fetchMovies(currentPageNo);
-  };
+  // const handleOnPrevClick = () => {
+  //   if (currentPageNo <= 0) return;
+  //   if (reachedToEnd) setReachedToEnd(false);
+  //   currentPageNo -= 1;
+  //   fetchMovies(currentPageNo);
+  // };
 
   const handleOnEditClick = async ({ id }) => {
     const { error, movie } = await getMovieForUodate(id);
@@ -91,7 +91,7 @@ export default function Movies() {
   return (
     <>
       <div className="space-y-5 p-5">
-        {movies.map((movie) => {
+        {newMovies.map((movie) => {
           return (
             <MovieListItem
               key={movie.id}
@@ -104,8 +104,8 @@ export default function Movies() {
 
         <PrevAndNextButtons
           className="mt-5"
-          onPrevClick={handleOnPrevClick}
-          onNextClick={handleOnNextClick}
+          onPrevClick={fetchPreviousPage}
+          onNextClick={fetchNextPage}
         />
       </div>
 
