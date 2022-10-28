@@ -27,6 +27,19 @@ export default function SearchMovies() {
     setMovies([...results]);
   };
 
+  const handleAfterDelete = (movie) => {
+    const updatedMovies = movies.filter((m) => m.id !== movie.id);
+    setMovies([...updatedMovies]);
+  };
+  const handleAfterUpdate = (movie) => {
+    const updatedMovies = movies.map((m) => {
+      if (m.id === movie.id) return movie;
+      else return m;
+    });
+
+    setMovies([...updatedMovies]);
+  };
+
   useEffect(() => {
     if (query.trim()) searchMovies(query);
   }, [query]);
@@ -36,7 +49,14 @@ export default function SearchMovies() {
       <NotFoundText text="No record found" visible={resultNotFound} />
       {!resultNotFound &&
         movies.map((m) => {
-          return <MovieListItem movie={m} key={m.id} />;
+          return (
+            <MovieListItem
+              movie={m}
+              key={m.id}
+              afterDelete={handleAfterDelete}
+              afterUpdate={handleAfterUpdate}
+            />
+          );
         })}
     </div>
   );
