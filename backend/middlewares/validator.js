@@ -108,7 +108,7 @@ exports.validateTrailer = check("trailer")
     return true;
   });
 
-exports.validaRatings = check("rating", "Rating must be between 0 and 10.").isFloat({
+exports.validateRatings = check("rating", "Rating must be between 0 and 10.").isFloat({
   min: 0,
   max: 10,
 });

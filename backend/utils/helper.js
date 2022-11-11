@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const cloudinary = require("../cloud");
+const Review = require("../models/Review");
 
 exports.sendError = (res, error, satatusCode = 401) => {
   res.status(satatusCode).json({ error });
@@ -60,4 +61,111 @@ exports.parseData = (req, res, next) => {
   if (tags) req.body.tags = JSON.parse(tags);
 
   next();
+};
+
+exports.avgRatingPipeline = (movieId) => {
+  return [
+    {
+      $lookup: {
+        from: "Review",
+        localField: "rating",
+        foreignField: "_id",
+        as: "avgRat",
+      },
+    },
+    {
+      $match: {
+        parentMovie: movieId,
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        ratingAvg: {
+          $avg: "$rating",
+        },
+        reviewCount: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
+};
+
+exports.relatedMovieAggregation = (tags, movieId) => {
+  return [
+    {
+      $lookup: {
+        from: "Movie",
+        localField: "tags",
+        foreignField: "_id",
+        as: "relatedMovies",
+      },
+    },
+    {
+      $match: {
+        tags: { $in: [...tags] },
+        _id: { $ne: movieId },
+      },
+    },
+    {
+      $project: {
+        title: 1,
+        poster: "$poster.url",
+      },
+    },
+    {
+      $limit: 5,
+    },
+  ];
+};
+
+exports.topRatedPipeline = (type) => {
+  return [
+    {
+      $lookup: {
+        from: "Movie",
+        localField: "reviews",
+        foreignField: "_id",
+        as: "topRated",
+      },
+    },
+    {
+      $match: {
+        reviews: { $exists: true },
+        status: { $eq: "public" },
+        type: { $eq: type },
+      },
+    },
+    {
+      $project: {
+        title: 1,
+        poster: "$poster.url",
+        reviewCount: { $size: "$reviews" },
+      },
+    },
+    {
+      $sort: {
+        reviewCount: -1,
+      },
+    },
+    {
+      $limit: 5,
+    },
+  ];
+};
+
+exports.getAverageRating = async (movieId) => {
+  const [aggregatedResonse] = await Review.aggregate(this.avgRatingPipeline(movieId));
+
+  const reviews = {};
+
+  if (aggregatedResonse) {
+    const { ratingAvg, reviewCount } = aggregatedResonse;
+
+    reviews.ratingAvg = parseFloat(ratingAvg).toFixed(1);
+    reviews.reviewsCount = reviewCount;
+  }
+
+  return reviews;
 };

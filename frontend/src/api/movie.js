@@ -107,3 +107,16 @@ export const searchMovieForAdmin = async (title) => {
     return catchError(error);
   }
 };
+
+export const getTopRatedMovies = async (type) => {
+  try {
+    let endPoint = "/movie/top-rated";
+
+    if (type) endPoint += "?type=" + type;
+
+    const { data } = await client(endPoint);
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};

@@ -1,7 +1,15 @@
-const { sendError, formatActor } = require("../utils/helper");
+const {
+  sendError,
+  formatActor,
+  avgRatingPipeline,
+  relatedMovieAggregation,
+  getAverageRating,
+  topRatedPipeline,
+} = require("../utils/helper");
 const cloudinary = require("../cloud");
 const Movie = require("../models/Movie");
 const { isValidObjectId } = require("mongoose");
+const Review = require("../models/Review");
 
 // Upload movie trailer
 exports.uploadTrailer = async (req, res) => {
@@ -426,6 +434,8 @@ exports.getSingleMovie = async (req, res) => {
 
   const movie = await Movie.findById(movieId).populate("director writers cast.actor");
 
+  const reviews = await getAverageRating(movie._id);
+
   const {
     _id: id,
     title,
@@ -468,6 +478,53 @@ exports.getSingleMovie = async (req, res) => {
       poster: poster?.url,
       trailer: trailer?.url,
       type,
+      reviews: { ...reviews },
     },
   });
+};
+
+exports.getRelatedMovies = async (req, res) => {
+  const { movieId } = req.params;
+
+  if (!isValidObjectId(movieId)) return sendError(res, "Movie id is not valid!");
+
+  const movie = await Movie.findById(movieId);
+
+  const movies = await Movie.aggregate(relatedMovieAggregation(movie.tags, movie._id));
+
+  const mapMovies = async (m) => {
+    const reviews = await getAverageRating(m._id);
+
+    return {
+      id: m._id,
+      title: m.title,
+      poster: m.poster,
+      reviews: { ...reviews },
+    };
+  };
+
+  const relatedMovies = await Promise.all(movies.map(mapMovies));
+
+  res.json({ relatedMovies });
+};
+
+exports.getTopRatedMovies = async (req, res) => {
+  const { type = "Documentary" } = req.query;
+
+  const movies = await Movie.aggregate(topRatedPipeline(type));
+
+  const mapMovies = async (m) => {
+    const reviews = await getAverageRating(m._id);
+
+    return {
+      id: m._id,
+      title: m.title,
+      poster: m.poster,
+      reviews: { ...reviews },
+    };
+  };
+
+  const topRatedMovies = await Promise.all(movies.map(mapMovies));
+
+  res.json({ movies: topRatedMovies });
 };

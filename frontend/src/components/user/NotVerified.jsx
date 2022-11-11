@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks";
-import Container from "../Container";
 
 export default function NotVerified() {
   const { authInfo } = useAuth();
@@ -17,7 +16,7 @@ export default function NotVerified() {
 
   // Render UI
   return (
-    <Container className="max-w-lg">
+    <div className="max-w-lg">
       {isLoggedIn && !isVerified ? (
         <p className="text-center bg-blue-50 p-2 font-medium">
           Looks like you havn't verified your account,{" "}
@@ -29,6 +28,6 @@ export default function NotVerified() {
           </button>
         </p>
       ) : null}
-    </Container>
+    </div>
   );
 }
