@@ -412,7 +412,7 @@ exports.searchMovies = async (req, res) => {
 exports.getLatestUploads = async (req, res) => {
   const { limit = 5 } = req.query;
 
-  const results = await Movie.find({ status: public }).sort("-createdAt").limit(parseInt(limit));
+  const results = await Movie.find({ status: "public" }).sort("-createdAt").limit(parseInt(limit));
 
   const movies = results.map((m) => {
     return {

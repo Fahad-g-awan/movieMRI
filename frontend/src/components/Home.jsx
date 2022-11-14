@@ -11,7 +11,7 @@ export default function Home() {
   // Render UI
   return (
     <div className="dark:bg-primary bg-white min-h-screen">
-      <Container>
+      <Container className="px-2 xl:p-0">
         <NotVerified />
         <HeroSlideShow />
         <TopRatedMovies />
