@@ -2,6 +2,8 @@ import React from "react";
 import GridContainer from "../GridContainer";
 import { AiFillStar } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import RatingStar from "../RatingStar";
+import { getPoster } from "../../utils/helper";
 
 const trimTitle = (text = "") => {
   if (text.length <= 20) return text;
@@ -15,7 +17,7 @@ export default function MovieList({ title, movies = [] }) {
   return (
     <div>
       <div>
-        <h1 className="text-2xl mt-8 dark:text-white text-secondary font-semibold mb-5">{title}</h1>
+        <h1 className="text-2xl dark:text-white text-secondary font-semibold mb-5">{title}</h1>
       </div>
 
       <GridContainer>
@@ -28,22 +30,20 @@ export default function MovieList({ title, movies = [] }) {
 }
 
 const ListMovie = ({ movie }) => {
-  const { id, title, poster, reviews } = movie;
+  const { id, title, poster, reviews, responsivePosters } = movie;
   return (
     <Link to={"/movie/" + id}>
-      <img className="aspect-video object-cover" src={poster} alt={title} />
+      <img
+        className="aspect-video object-cover"
+        src={getPoster(responsivePosters) || poster}
+        alt={title}
+      />
 
       <h1 className="text-lg dark:text-white text-secondary font-semibold" title={title}>
         {trimTitle(title)}
       </h1>
-      {reviews?.ratingAvg ? (
-        <p className="text-highlight dark:text-highlight-dark flex items-center space-x-1">
-          <span>{reviews?.ratingAvg}</span>
-          <AiFillStar />
-        </p>
-      ) : (
-        <p className="text-highlight dark:text-highlight-dark">No reviews</p>
-      )}
+
+      <RatingStar rating={reviews.ratingAvg} />
     </Link>
   );
 };

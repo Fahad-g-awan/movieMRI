@@ -127,8 +127,7 @@ exports.createMovie = async (req, res) => {
   await newMovie.save();
 
   res.status(201).json({
-    id: newMovie._id,
-    title,
+    movie: { id: newMovie._id, title },
   });
 };
 
@@ -350,6 +349,7 @@ exports.getMovies = async (req, res) => {
       poster: m.poster?.url,
       genres: m.genres,
       status: m.status,
+      responsivePosters: movies.poster?.responsive,
     };
   });
 
@@ -420,6 +420,7 @@ exports.getLatestUploads = async (req, res) => {
       title: m.title,
       poster: m.poster?.url,
       storyLine: m.storyLine,
+      responsivePosters: m.poster.responsive,
       trailer: m.trailer?.url,
     };
   });
@@ -428,7 +429,7 @@ exports.getLatestUploads = async (req, res) => {
 };
 
 exports.getSingleMovie = async (req, res) => {
-  const { movieId } = req.query;
+  const { movieId } = req.params;
 
   if (!isValidObjectId(movieId)) return sendError(res, "Movie id is not valid!");
 
@@ -500,12 +501,13 @@ exports.getRelatedMovies = async (req, res) => {
       title: m.title,
       poster: m.poster,
       reviews: { ...reviews },
+      responsivePosters: m.responsivePosters,
     };
   };
 
   const relatedMovies = await Promise.all(movies.map(mapMovies));
 
-  res.json({ relatedMovies });
+  res.json({ movies: relatedMovies });
 };
 
 exports.getTopRatedMovies = async (req, res) => {
@@ -520,6 +522,7 @@ exports.getTopRatedMovies = async (req, res) => {
       id: m._id,
       title: m.title,
       poster: m.poster,
+      responsivePosters: m.responsivePosters,
       reviews: { ...reviews },
     };
   };

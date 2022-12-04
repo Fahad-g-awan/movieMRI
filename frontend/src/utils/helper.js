@@ -22,3 +22,13 @@ export const renderItem = (result) => {
     </div>
   );
 };
+
+export const getPoster = (posters = []) => {
+  const { length } = posters; //poster.length
+
+  if (!length) return null;
+
+  if (length > 2) return posters[1];
+
+  return posters[0];
+};

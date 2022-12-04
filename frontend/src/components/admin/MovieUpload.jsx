@@ -16,6 +16,13 @@ export default function MovieUpload({ visible, onClose }) {
 
   const { updateNotification } = useNotification();
 
+  const resetState = () => {
+    setVideoSelected(false);
+    setVideoUploaded(false);
+    setUploadProgress(0);
+    setVideoInfo({});
+  };
+
   // Video handler
   const uploadTrailerHandler = async (data) => {
     const { error, url, public_id } = await uploadTrailer(data, setUploadProgress);
@@ -54,8 +61,14 @@ export default function MovieUpload({ visible, onClose }) {
 
     setBusy(true);
     data.append("trailer", JSON.stringify(videoInfo));
-    const res = await uploadMovie(data);
+    const { error, movie } = await uploadMovie(data);
     setBusy(false);
+    if (error) return updateNotification("error", error);
+
+    updateNotification("success", "Movie uploaded successfully");
+
+    resetState();
+
     onClose();
   };
 
@@ -92,10 +105,10 @@ const TrailerUploader = ({ visible, handleChange, onTypeError }) => {
         Upload Movie Trailer
       </p>
       <FileUploader handleChange={handleChange} onTypeError={onTypeError} types={["mp4", "avi"]}>
-        <div className="w-48 h-48 border border-dashed dark:border-dark-subtle border-light-subtle rounded-full flex items-center justify-center flex-col text-secondary dark:text-dark-subtle cursor-pointer">
+        <label className="w-48 h-48 border border-dashed dark:border-dark-subtle border-light-subtle rounded-full flex items-center justify-center flex-col text-secondary dark:text-dark-subtle cursor-pointer">
           <AiOutlineCloudUpload size={80} />
           <p>Drops your files here</p>
-        </div>
+        </label>
       </FileUploader>
     </div>
   );
