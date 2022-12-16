@@ -72,6 +72,7 @@ export default function MovieListItem({ movie, afterDelete, afterUpdate }) {
 
 const MovieCard = ({ movie, onDeleteClick, onOpenClick, onEditClick }) => {
   const { poster, title, responsivePosters, genres = [], status } = movie;
+
   return (
     <table className="w-full border-b">
       <tbody>

@@ -77,8 +77,8 @@ exports.createMovie = async (req, res) => {
     newMovie.director = director;
   }
   if (writers) {
-    for (let writterId of writers) {
-      if (!isValidObjectId(writterId)) return sendError(res, "Invalid director id");
+    for (let w of writers) {
+      if (!isValidObjectId(w)) return sendError(res, "Invalid writer id");
     }
     newMovie.writers = writers;
   }

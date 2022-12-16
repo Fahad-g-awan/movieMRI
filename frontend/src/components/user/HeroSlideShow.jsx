@@ -94,7 +94,7 @@ export default function HeroSlideShow() {
   };
 
   const handleOnVisibilityChange = () => {
-    const visibility = document.visibilityState;
+    let visibility = document.visibilityState;
 
     if ((visibility = "visible")) setVisible(true);
     if ((visibility = "hidden")) setVisible(false);

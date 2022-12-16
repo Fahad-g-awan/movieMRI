@@ -14,3 +14,12 @@ export const addReview = async (movieId, reviewData) => {
     return catchError(error);
   }
 };
+
+export const getReview = async (movieId) => {
+  try {
+    const { data } = await client("/review/get-reviews-by-movie/" + movieId);
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};

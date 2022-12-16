@@ -81,7 +81,7 @@ exports.getReviewsByMovie = async (req, res) => {
 
   const movie = await Movie.findById(movieId)
     .populate({
-      path: "review",
+      path: "reviews",
       populate: {
         path: "owner",
         select: "name",

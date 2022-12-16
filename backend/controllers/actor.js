@@ -114,7 +114,7 @@ exports.getSingleActor = async (req, res) => {
 
   if (!actor) sendError(res, "Invalid request, record not found.", 404);
 
-  res.json(formatActor(actor));
+  res.json({ actor: formatActor(actor) });
 };
 
 exports.getActors = async (req, res) => {

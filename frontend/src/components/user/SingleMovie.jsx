@@ -6,6 +6,7 @@ import { useAuth, useNotification } from "../../hooks";
 import Container from "../Container";
 import CustomButtonLink from "../CustomButtonLink";
 import AddRatingModel from "../modals/AddRatingModel";
+import ProfileModal from "../modals/ProfileModal";
 import RatingStar from "../RatingStar";
 import RelatedMovies from "../RelatedMovies";
 
@@ -22,6 +23,8 @@ const covertDate = (date = "") => {
 export default function SingleMovie() {
   const [ready, setReady] = useState(false);
   const [showRatingModel, setShowRatingModel] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState({});
   const [movie, setMovie] = useState({});
 
   const { movieId } = useParams();
@@ -49,6 +52,15 @@ export default function SingleMovie() {
 
   const handleOnSuccessRating = (reviews) => {
     setMovie({ ...movie, reviews: { ...reviews } });
+  };
+
+  const handleProfileClick = (profile) => {
+    setSelectedProfile(profile);
+    setShowProfileModal(true);
+  };
+
+  const hideProfileModal = () => {
+    setShowProfileModal(false);
   };
 
   useEffect(() => {
@@ -92,7 +104,7 @@ export default function SingleMovie() {
             <div className="flex flex-row space-x-3">
               <CustomButtonLink
                 label={convertReviewCount(reviews.reviewsCount) + " Reviews"}
-                onClick={() => navigate("movie/reviews/" + id)}
+                onClick={() => navigate("/movie/reviews/" + id)}
               />
               <RatingStar rating={reviews.ratingAvg} />
             </div>
@@ -106,7 +118,7 @@ export default function SingleMovie() {
 
           {/* director */}
           <ListWithLabel label="Director:">
-            <CustomButtonLink label={director.name} />
+            <CustomButtonLink label={director.name} onClick={() => handleProfileClick(director)} />
           </ListWithLabel>
 
           {/* writers */}
@@ -152,6 +164,12 @@ export default function SingleMovie() {
           <RelatedMovies movieId={movieId} />
         </div>
       </Container>
+
+      <ProfileModal
+        visible={showProfileModal}
+        onClose={hideProfileModal}
+        profileId={selectedProfile.id}
+      />
 
       <AddRatingModel
         visible={showRatingModel}

@@ -73,3 +73,12 @@ export const getActors = async (limit, pageNo) => {
     return catchError(error);
   }
 };
+
+export const getActorProfile = async (id) => {
+  try {
+    const { data } = await client(`/actor/single/${id}`);
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};

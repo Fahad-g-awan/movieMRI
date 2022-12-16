@@ -28,7 +28,7 @@ export const getPoster = (posters = []) => {
 
   if (!length) return null;
 
-  if (length > 2) return posters[1];
+  if (length > 2) return posters[1].url;
 
-  return posters[0];
+  return posters[0].url;
 };
