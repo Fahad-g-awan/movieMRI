@@ -19,7 +19,7 @@ export default function AddRatingModel({ visible, onSuccess, onClose }) {
   };
 
   return (
-    <ModalContainer visible={visible} onClose={onclose} ignoreContainer>
+    <ModalContainer visible={visible} onClose={onClose} ignoreContainer>
       <RatingsForm onSubmit={handleSubmit} />
     </ModalContainer>
   );

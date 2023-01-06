@@ -122,7 +122,7 @@ export default function HeroSlideShow() {
 
   return (
     <div className="flex w-full">
-      <div className="w-4/5 aspect-video relative overflow-hidden">
+      <div className="md:w-4/5 w-full aspect-video relative overflow-hidden">
         {/* actual slide */}
         <Slide ref={slideRef} title={slide.title} src={slide.poster} id={slide.id} />
 
@@ -140,7 +140,7 @@ export default function HeroSlideShow() {
       </div>
 
       {/* up next section */}
-      <div className="w-1/5 space-y-3 p-3">
+      <div className="w-1/5 md:block hidden space-y-3 p-3">
         <h1 className="font-semibold text-2xl text-primary dark:text-white">Up Next</h1>
 
         {upNext.map(({ poster, id }) => {

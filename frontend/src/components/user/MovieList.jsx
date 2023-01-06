@@ -33,7 +33,11 @@ const ListMovie = ({ movie }) => {
   const { id, title, poster, reviews, responsivePosters } = movie;
   return (
     <Link to={"/movie/" + id}>
-      <img className="aspect-video object-cover" src={getPoster(poster) || poster} alt={title} />
+      <img
+        className="aspect-video object-cover w-full"
+        src={getPoster(poster) || poster}
+        alt={title}
+      />
 
       <h1 className="text-lg dark:text-white text-secondary font-semibold" title={title}>
         {trimTitle(title)}

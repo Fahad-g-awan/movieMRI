@@ -8,6 +8,8 @@ exports.addReview = async (req, res) => {
   const { content, rating } = req.body;
   const userId = req.user._id;
 
+  if (!req.user.isVerified) return sendError(res, "Please verify your email to add review");
+
   if (!isValidObjectId(movieId)) return sendError(res, "Invalid Movie!");
 
   const movie = await Movie.findOne({ _id: movieId, status: "public" });
@@ -44,7 +46,7 @@ exports.updateReview = async (req, res) => {
 
   if (!isValidObjectId(reviewId)) return sendError(res, "Invalid reveiw id!");
 
-  const review = await Review.findOne({ owner: userId, _id, reviewId });
+  const review = await Review.findOne({ owner: userId, _id: reviewId });
   if (!review) return sendError(res, "Reveiw not found!", 404);
 
   review.content = content;
@@ -57,14 +59,14 @@ exports.updateReview = async (req, res) => {
 
 exports.removeReview = async (req, res) => {
   const { reviewId } = req.params;
-  const userId = req.use._id;
+  const userId = req.user._id;
 
   if (!isValidObjectId(reviewId)) return sendError(res, "Invalid review Id");
 
   const review = await Review.findOne({ _id: reviewId, owner: userId });
   if (!review) return sendError(res, "Invalid request, review not found");
 
-  const movie = await Movie.findById(review.paraentMovie).select("reviews");
+  const movie = await Movie.findById(review.parentMovie).select("reviews");
 
   movie.reviews = movie.reviews.filter((rId) => rId.toString() !== reviewId);
 
@@ -87,7 +89,7 @@ exports.getReviewsByMovie = async (req, res) => {
         select: "name",
       },
     })
-    .select("reviews");
+    .select("reviews title");
 
   const reviews = movie.reviews.map((r) => {
     const { owner, content, rating, _id: reviewId } = r;
@@ -104,5 +106,5 @@ exports.getReviewsByMovie = async (req, res) => {
     };
   });
 
-  res.json({ reviews });
+  res.json({ movie: { title: movie.title, reviews } });
 };

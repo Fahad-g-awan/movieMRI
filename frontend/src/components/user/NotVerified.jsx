@@ -16,7 +16,7 @@ export default function NotVerified() {
 
   // Render UI
   return (
-    <div className="max-w-lg">
+    <div>
       {isLoggedIn && !isVerified ? (
         <p className="text-center bg-blue-50 p-2 font-medium">
           Looks like you havn't verified your account,{" "}

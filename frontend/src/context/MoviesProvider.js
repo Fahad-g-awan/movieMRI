@@ -27,7 +27,7 @@ export default function MoviesProvider({ children }) {
   };
 
   const fetchLatestUploads = async (qty = 5) => {
-    const { error, movies } = await getMovies(0, qty);
+    const { error, movies } = await getMovies(qty, 0);
 
     if (error) return updateNotification("error", error);
 

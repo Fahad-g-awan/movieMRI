@@ -122,6 +122,12 @@ exports.relatedMovieAggregation = (tags, movieId) => {
 };
 
 exports.topRatedPipeline = (type) => {
+  const matchedOptions = {
+    reviews: { $exists: true },
+    status: { $eq: "public" },
+  };
+
+  if (type) matchedOptions.type = { $eq: type };
   return [
     {
       $lookup: {
@@ -132,11 +138,7 @@ exports.topRatedPipeline = (type) => {
       },
     },
     {
-      $match: {
-        reviews: { $exists: true },
-        status: { $eq: "public" },
-        type: { $eq: type },
-      },
+      $match: matchedOptions,
     },
     {
       $project: {
@@ -158,12 +160,12 @@ exports.topRatedPipeline = (type) => {
 };
 
 exports.getAverageRating = async (movieId) => {
-  const [aggregatedResonse] = await Review.aggregate(this.avgRatingPipeline(movieId));
+  const [aggregatedResponse] = await Review.aggregate(this.avgRatingPipeline(movieId));
 
   const reviews = {};
 
-  if (aggregatedResonse) {
-    const { ratingAvg, reviewCount } = aggregatedResonse;
+  if (aggregatedResponse) {
+    const { ratingAvg, reviewCount } = aggregatedResponse;
 
     reviews.ratingAvg = parseFloat(ratingAvg).toFixed(1);
     reviews.reviewsCount = reviewCount;

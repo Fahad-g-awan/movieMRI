@@ -8,7 +8,7 @@ export default function LatestUploads() {
   const handleUiUpdate = () => fetchLatestUploads();
 
   useEffect(() => {
-    fetchLatestUploads();
+    fetchLatestUploads(5);
   }, []);
 
   return (
