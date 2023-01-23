@@ -10,7 +10,7 @@ export default function TopRatedMovies(signal) {
 
   const { updateNotification } = useNotification();
 
-  const fetchMovies = async () => {
+  const fetchMovies = async (signal) => {
     const { error, movies } = await getTopRatedMovies(null, signal);
 
     if (error) return updateNotification("error", error);

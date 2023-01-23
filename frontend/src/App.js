@@ -12,6 +12,8 @@ import AdminNavigator from "./navigator/AdminNavigator";
 import { useAuth } from "./hooks";
 import SingleMovie from "./components/user/SingleMovie";
 import MovieReview from "./components/user/MovieReview";
+import SearchMovies from "./components/user/SearchMovies";
+import AllMovies from "./components/user/AllMovies";
 
 export default function App() {
   const { authInfo } = useAuth();
@@ -31,6 +33,8 @@ export default function App() {
         <Route path="/auth/reset-password" element={<ConfirmPassword />} />
         <Route path="/movie/:movieId" element={<SingleMovie />} />
         <Route path="/movie/reviews/:movieId" element={<MovieReview />} />
+        <Route path="/movie/search" element={<SearchMovies />} />
+        <Route path="/movie/all-public-movies" element={<AllMovies />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

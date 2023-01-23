@@ -531,3 +531,54 @@ exports.getTopRatedMovies = async (req, res) => {
 
   res.json({ movies: topRatedMovies });
 };
+
+exports.searchPublicMovies = async (req, res) => {
+  const { title } = req.query;
+
+  if (!title.trim()) return sendError(res, "Invalid Request");
+
+  const movies = await Movie.find({ title: { $regex: title, $options: "i" }, status: "public" });
+
+  const mapMovies = async (m) => {
+    const reviews = await getAverageRating(m._id);
+
+    return {
+      id: m._id,
+      title: m.title,
+      poster: m.poster?.url,
+      responsivePosters: m.poster?.responsive,
+      reviews: { ...reviews },
+    };
+  };
+
+  const results = await Promise.all(movies.map(mapMovies));
+
+  res.json({
+    results,
+  });
+};
+
+exports.getPublicMovies = async (req, res) => {
+  const { limit = 5, pageNo = 0 } = req.query;
+
+  const movies = await Movie.find({})
+    .sort({ createdAt: -1 })
+    .skip(parseInt(limit) * parseInt(pageNo))
+    .limit(parseInt(limit));
+
+  const mapMovies = async (m) => {
+    const reviews = await getAverageRating(m._id);
+
+    return {
+      id: m._id,
+      title: m.title,
+      poster: m.poster?.url,
+      responsivePosters: m.poster?.responsive,
+      reviews: { ...reviews },
+    };
+  };
+
+  const results = await Promise.all(movies.map(mapMovies));
+
+  res.json({ movies: results });
+};

@@ -51,6 +51,15 @@ export const getMovies = async (limit, pageNo) => {
   }
 };
 
+export const getAllPublicMovies = async (limit, pageNo) => {
+  try {
+    const { data } = await client(`/movie/all-movies?limit=${limit}&pageNo=${pageNo}`);
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
+
 export const getMovieForUodate = async (id) => {
   const token = getToken();
   try {
@@ -142,6 +151,15 @@ export const getSingleMovie = async (id) => {
 export const getRelatedMovies = async (id) => {
   try {
     const { data } = await client("/movie/related/" + id);
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
+
+export const searchPublicMovies = async (title) => {
+  try {
+    const { data } = await client("/movie/search-public?title=" + title);
     return data;
   } catch (error) {
     return catchError(error);

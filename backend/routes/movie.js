@@ -11,6 +11,8 @@ const {
   getSingleMovie,
   getRelatedMovies,
   getTopRatedMovies,
+  searchPublicMovies,
+  getPublicMovies,
 } = require("../controllers/movie");
 const { isAuth, isAdmin } = require("../middlewares/auth");
 const { uploadVideo, uploadImage } = require("../middlewares/multer");
@@ -60,9 +62,11 @@ router.get("/search", isAuth, isAdmin, searchMovies);
 
 // Routes for normal users
 
+router.get("/all-movies", getPublicMovies);
 router.get("/latest-upload", getLatestUploads);
 router.get("/single/:movieId", getSingleMovie);
 router.get("/related/:movieId", getRelatedMovies);
 router.get("/top-rated", getTopRatedMovies);
+router.get("/search-public", searchPublicMovies);
 
 module.exports = router;

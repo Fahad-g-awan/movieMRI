@@ -8,6 +8,8 @@ import { useNotification } from "../../hooks";
 
 let count = 0;
 let intervalId;
+let newTime = 0;
+let lastTime = 0;
 
 export default function HeroSlideShow() {
   const [slide, setSlide] = useState({});
@@ -46,6 +48,7 @@ export default function HeroSlideShow() {
   };
 
   const handleOnNextClick = () => {
+    lastTime = Date.now();
     pauseSlideShow();
     setCloneSlide(movies[count]);
 
@@ -86,7 +89,14 @@ export default function HeroSlideShow() {
   };
 
   const startSlideShow = () => {
-    intervalId = setInterval(handleOnNextClick, 3500);
+    intervalId = setInterval(() => {
+      newTime = Date.now();
+      const delta = newTime - lastTime;
+
+      if (delta < 4000) return clearInterval(intervalId);
+
+      handleOnNextClick();
+    }, 3500);
   };
 
   const pauseSlideShow = () => {

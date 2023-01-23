@@ -16,9 +16,9 @@ export default function MovieList({ title, movies = [] }) {
 
   return (
     <div>
-      <div>
+      {title && (
         <h1 className="text-2xl dark:text-white text-secondary font-semibold mb-5">{title}</h1>
-      </div>
+      )}
 
       <GridContainer>
         {movies.map((movie) => {
