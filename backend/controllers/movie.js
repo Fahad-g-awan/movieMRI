@@ -1,7 +1,6 @@
 const {
   sendError,
   formatActor,
-  avgRatingPipeline,
   relatedMovieAggregation,
   getAverageRating,
   topRatedPipeline,

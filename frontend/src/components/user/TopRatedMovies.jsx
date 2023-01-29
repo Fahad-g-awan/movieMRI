@@ -13,7 +13,7 @@ export default function TopRatedMovies(signal) {
   const fetchMovies = async (signal) => {
     const { error, movies } = await getTopRatedMovies(null, signal);
 
-    if (error) return updateNotification("error", error);
+    // if (error) return updateNotification("error", error);
 
     setMovies([...movies]);
   };
