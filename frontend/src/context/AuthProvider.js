@@ -67,7 +67,7 @@ export default function AuthProvider({ children }) {
 
   useEffect(() => {
     isAuth();
-  });
+  }, []);
 
   // Render UI
 

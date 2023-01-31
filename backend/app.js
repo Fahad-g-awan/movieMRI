@@ -11,7 +11,6 @@ const movieRouter = require("./routes/movie");
 const reviewRouter = require("./routes/review");
 const adminRouter = require("./routes/admin");
 const { notFoundHandler } = require("./utils/helper");
-
 const app = express();
 
 app.use(cors());

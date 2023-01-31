@@ -424,7 +424,7 @@ exports.getLatestUploads = async (req, res) => {
     };
   });
 
-  res.json({ movies });
+  res.json({ movies: movies });
 };
 
 exports.getSingleMovie = async (req, res) => {
