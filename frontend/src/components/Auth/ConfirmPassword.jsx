@@ -86,7 +86,7 @@ export default function ConfirmPassword() {
   // Use effect
   useEffect(() => {
     isValidToken();
-  }, []);
+  });
 
   // Render UI
   if (isVerifying) {

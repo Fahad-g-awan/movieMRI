@@ -1,6 +1,5 @@
 export const validateMovie = (movieInfo) => {
-  const { title, storyLine, language, releaseDate, status, type, genres, tags, cast, director } =
-    movieInfo;
+  const { title, storyLine, language, releaseDate, status, type, genres, tags, cast } = movieInfo;
 
   if (!title.trim()) return { error: "Title is missing" };
   if (!storyLine.trim()) return { error: "Story line is missing" };
