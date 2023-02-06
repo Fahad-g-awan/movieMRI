@@ -1,8 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Container from "./Container";
-import CustomButtonLink from "./CustomButtonLink";
-import AllMovies from "./user/AllMovies";
 import HeroSlideShow from "./user/HeroSlideShow";
 import NotVerified from "./user/NotVerified";
 import TopRatedMovies from "./user/TopRatedMovies";

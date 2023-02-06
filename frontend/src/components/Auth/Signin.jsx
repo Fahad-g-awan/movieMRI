@@ -84,7 +84,12 @@ export default function Signin() {
 
           <div className="flex justify-between">
             <CustomLink to="/auth/forget-password">Forget Password</CustomLink>
-            <CustomLink to="/auth/signup">Sign Up</CustomLink>
+            <div className="flex space-x-1 items-center">
+              <p className="dark:text-white text-secondary font-semibold text-xs text-center">
+                Don't have an account?
+              </p>
+              <CustomLink to="/auth/signup">Sign Up</CustomLink>
+            </div>
           </div>
         </form>
       </Container>
