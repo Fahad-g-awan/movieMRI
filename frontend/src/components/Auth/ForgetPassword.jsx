@@ -13,6 +13,7 @@ import Title from "../form/Title";
 
 export default function ForgetPasword() {
   const [email, setEmail] = useState("");
+  const [busy, setBusy] = useState(false);
 
   const navigate = useNavigate();
   const { updateNotification } = useNotification();
@@ -28,11 +29,12 @@ export default function ForgetPasword() {
   // Submit handler
   const submitHandler = async (e) => {
     e.preventDefault();
-
+    setBusy(true);
     if (!isValidEmail(email)) return updateNotification("error", "Invalid email address");
 
     const { error, message } = await forgetPassword(email);
 
+    setBusy(false);
     if (error) return updateNotification("error", error);
 
     updateNotification("success", message);
@@ -59,7 +61,7 @@ export default function ForgetPasword() {
             lable="Email"
           />
 
-          <Submit value="Submit" />
+          <Submit value="Submit" busy={busy} />
 
           <div className="flex justify-between">
             <CustomLink to="/auth/signin">Sign in</CustomLink>

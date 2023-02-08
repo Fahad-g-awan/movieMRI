@@ -21,6 +21,7 @@ export default function ConfirmPassword() {
   });
   const [isVerifying, setIsVerifying] = useState(true);
   const [isValid, setIsValid] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
@@ -39,7 +40,7 @@ export default function ConfirmPassword() {
   // Submit handler
   const submitHandler = async (e) => {
     e.preventDefault();
-
+    setBusy(true);
     if (!password.one.trim()) {
       return updateNotification("error", "Password is missing");
     }
@@ -56,6 +57,7 @@ export default function ConfirmPassword() {
       token,
     });
 
+    setBusy(false);
     if (error) {
       return updateNotification("error", error);
     }
@@ -141,7 +143,7 @@ export default function ConfirmPassword() {
             lable="Confirm Password"
           />
 
-          <Submit value="Reset Password" />
+          <Submit value="Reset Password" busy={busy} />
 
           <div className="flex justify-between">
             <CustomLink to="/auth/signin">Sign in</CustomLink>

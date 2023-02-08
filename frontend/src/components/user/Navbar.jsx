@@ -9,7 +9,6 @@ export default function Navbar() {
   const { toggleTheme } = useTheme();
   const { authInfo, logoutHandler } = useAuth();
   const { isLoggedIn } = authInfo;
-
   const navigate = useNavigate();
 
   const handleSearchSubmit = (query) => {

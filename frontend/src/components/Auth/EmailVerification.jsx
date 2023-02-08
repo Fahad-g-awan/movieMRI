@@ -27,6 +27,7 @@ const isValidOtp = (otp) => {
 export default function EmailVerification() {
   const [otp, setOtp] = useState(new Array(OTP_LENGTH).fill(""));
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
+  const [busy, setBusy] = useState(false);
 
   const { isAuth, authInfo } = useAuth();
   const { isLoggedIn, profile } = authInfo;
@@ -75,7 +76,7 @@ export default function EmailVerification() {
   // Submit handler
   const submitHandler = async (e) => {
     e.preventDefault();
-
+    setBusy(true);
     if (isValidOtp(otp)) return updateNotification("error", "Invalid OTP");
 
     const {
@@ -84,6 +85,7 @@ export default function EmailVerification() {
       user: userResponse,
     } = await verifyUserEmail({ OTP: otp.join(""), userId: user.id });
 
+    setBusy(false);
     if (error) return updateNotification("error", error);
 
     updateNotification("success", message);
@@ -140,7 +142,7 @@ export default function EmailVerification() {
           </div>
 
           <div>
-            <Submit value="Verify Account" />
+            <Submit value="Verify Account" busy={busy} />
             <button
               type="button"
               onClick={otpResendHandler}

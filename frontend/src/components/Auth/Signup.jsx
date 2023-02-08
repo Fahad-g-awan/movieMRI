@@ -34,6 +34,7 @@ export default function Signin() {
     email: "",
     password: "",
   });
+  const [busy, setBusy] = useState(false);
 
   const navigate = useNavigate();
   const { updateNotification } = useNotification();
@@ -52,17 +53,18 @@ export default function Signin() {
   const submitHandler = async (e) => {
     e.preventDefault();
 
+    setBusy(true);
+
     const { ok, error } = validateUser(userInfo);
 
     if (!ok) return updateNotification("error", error);
 
     const response = await createUser(userInfo);
 
+    setBusy(false);
     if (response.error) return updateNotification("error", response.error);
 
     navigate("/auth/verification", { state: { user: response.user }, replace: true });
-
-    console.log(response.user);
   };
 
   const { name, email, password } = userInfo;
@@ -106,7 +108,7 @@ export default function Signin() {
             lable="Password"
           />
 
-          <Submit value="Sign Up" />
+          <Submit value="Sign Up" busy={busy} />
 
           <div className="flex justify-between">
             <CustomLink to="/auth/forget-password">Forget Password</CustomLink>
