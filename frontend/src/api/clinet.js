@@ -1,9 +1,9 @@
 import axios from "axios";
 
-// "https://moviemri-backend-9qom8.ondigitalocean.app/api"
+// "https://moviemri-backend.onrender.com/api"
 
 const client = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: "https://moviemri-backend.onrender.com/api",
 });
 
 export default client;
