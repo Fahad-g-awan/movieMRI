@@ -15,7 +15,9 @@ export default function MostRatedMovies() {
     const { movies, error } = await getMostRatedMovies();
 
     if (error) return updateNotification("error", error);
-
+    if (movies === null) {
+      return;
+    }
     setMovies([...movies]);
   };
 
@@ -26,22 +28,28 @@ export default function MostRatedMovies() {
   return (
     <div className="bg-white shadow dark:bg-secondary p-5 rounded">
       <h1 className="font-semibold text-2xl mb-2 text-primary dark:text-white">
-        Most Rated Movies{" "}
+        Most Rated Movies
       </h1>
       <ul className="space-y-3">
-        {movies.map((movie) => {
-          return (
-            <li key={movie.id}>
-              <h1 className="dark:text-white text-secondary font-semibold"> {movie.title}</h1>
-              <div className="flex space-x-2">
-                <RatingStar rating={movie.reviews?.ratingAvg} />
-                <p className="dark:text-dark-subtle text-light-subtle">
-                  {convertReviewCount(movie.reviews?.reviewsCount)} Reviews
-                </p>
-              </div>
-            </li>
-          );
-        })}
+        {movies.length ? (
+          movies.map((movie) => {
+            return (
+              <li key={movie.id}>
+                <h1 className="dark:text-white text-secondary font-semibold"> {movie.title}</h1>
+                <div className="flex space-x-2">
+                  <RatingStar rating={movie.reviews?.ratingAvg} />
+                  <p className="dark:text-dark-subtle text-light-subtle">
+                    {convertReviewCount(movie.reviews?.reviewsCount)} Reviews
+                  </p>
+                </div>
+              </li>
+            );
+          })
+        ) : (
+          <h1 className="dark:text-white text-secondary font-semibold">
+            No reveis have been added
+          </h1>
+        )}
       </ul>
     </div>
   );

@@ -29,6 +29,7 @@ export default function HeroSlideShow() {
 
     setMovies([...movies]);
     setSlide(movies[0]);
+    console.log(movies);
   };
 
   const updateUpNext = (currentIndex) => {

@@ -16,13 +16,16 @@ exports.getMostRated = async (req, res) => {
 
   const mapMovies = async (m) => {
     const reviews = await getAverageRating(m._id);
-
     return {
       id: m._id,
       title: m.title,
       reviews: { ...reviews },
     };
   };
+
+  if (movies.reviewCount === 1) {
+    return res.json(null);
+  }
 
   const topRatedMovies = await Promise.all(movies.map(mapMovies));
 
