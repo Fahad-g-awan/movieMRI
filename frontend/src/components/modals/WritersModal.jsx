@@ -4,8 +4,15 @@ import ModalContainer from "./ModalContainer";
 
 export default function writersModal({ profiles = [], visible, onClose, onRemove }) {
   return (
-    <ModalContainer ignoreContainer onClose={onClose} visible={visible}>
+    <ModalContainer ignoreContainer visible={visible}>
       <div className="space-y-2 dark:bg-primary bg-white rounded max-w-[45rem] max-h-[40rem] overflow-auto p-2 custom-scroll-bar">
+        <div className="flex justify-between dark:text-white text-primary font-semibold bg-secondary p-1">
+          <h1>All Writers</h1>
+          <p onClick={onClose} className="cursor-pointer text-red-600 opacity-90 hover:opacity-100">
+            Close
+          </p>
+        </div>
+
         {profiles.map(({ id, avatar, name }) => {
           return (
             <div

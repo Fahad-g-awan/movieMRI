@@ -34,7 +34,7 @@ const defaultMovieInfo = {
   status: "",
 };
 
-export default function MovieForm({ onSubmit, busy, btnTitle, initialState }) {
+export default function MovieForm({ onSubmit, busy, btnTitle, initialState, onClose }) {
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
   const [showWritersModal, setShowWritersModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
@@ -287,6 +287,9 @@ export default function MovieForm({ onSubmit, busy, btnTitle, initialState }) {
             options={statusOptions}
             label="Status"
           />
+          <div className="h-80 flex items-end">
+            <Submit busy={busy} type="button" value="Cancel" onClick={onClose} />
+          </div>
         </div>
       </div>
 

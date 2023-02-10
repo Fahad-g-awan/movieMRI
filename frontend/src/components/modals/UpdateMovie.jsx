@@ -39,9 +39,10 @@ export default function UpdateMovie({ visible, onSuccess, onClose, movieId }) {
   }, [movieId]);
 
   return (
-    <ModalContainer visible={visible} onClose={onClose}>
+    <ModalContainer visible={visible}>
       {ready ? (
         <MovieForm
+          onClose={onClose}
           initialState={selectedMovie}
           btnTitle="Update"
           onSubmit={!busy ? handleSubmit : null}
