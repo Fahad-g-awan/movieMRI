@@ -47,7 +47,7 @@ export default function MostRatedMovies() {
           })
         ) : (
           <h1 className="dark:text-white text-secondary font-semibold">
-            No reveis have been added
+            No ratings have been added
           </h1>
         )}
       </ul>

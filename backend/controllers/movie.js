@@ -186,16 +186,15 @@ exports.updateMovie = async (req, res) => {
   }
 
   // Updating poster
-
   if (file) {
     // Removing old poster form cloud
     const { public_id } = movie.poster?.public_id;
-    if ({ public_id }) {
+    if (public_id) {
       const { result } = await cloudinary.uploader.destroy({ public_id });
       if (result !== "ok") return sendError(res, "Colud not remove poster from cloud");
     }
 
-    await cloudinary.uploader.upload(
+    const response = await cloudinary.uploader.upload(
       file.path,
       {
         transformation: {
@@ -218,8 +217,12 @@ exports.updateMovie = async (req, res) => {
       }
     );
 
-    const finalPoster = { url, public_id, responsive: [] };
-    const { breakpoints } = responsive_breakpoints[0];
+    const finalPoster = {
+      url: response.url,
+      public_id: response.public_id,
+      responsive: [],
+    };
+    const { breakpoints } = response.responsive_breakpoints[0];
 
     if (breakpoints.length) {
       for (let imgObg of breakpoints) {
@@ -320,12 +323,17 @@ exports.removeMovie = async (req, res) => {
     if (result !== "ok") return sendError(res, "Colud not remove movie poster from cloud");
   }
 
-  console.log("BACkEND");
   // Remove movie trailer from cloud
-  const trailer = movie.trailer?.public_id;
-  if (!trailer) return sendError(res, "Movie trailer not found on cloud");
+  const trailerId = movie.trailer?.public_id;
 
-  const { result } = await cloudinary.uploader.destroy(trailer, { resource_type: "video" });
+  if (!trailerId) return sendError(res, "Movie trailer not found on cloud");
+
+  const { result } = await cloudinary.uploader.destroy(trailerId, {
+    resource_type: "video",
+  });
+
+  console.log(trailerId);
+
   if (result !== "ok") return sendError(res, "Colud not remove movie trailer from cloud");
 
   await Movie.findByIdAndDelete(movieId);
