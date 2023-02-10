@@ -155,7 +155,7 @@ export default function MovieForm({ onSubmit, busy, btnTitle, initialState }) {
     finalMovieInfo.cast = JSON.stringify(finalCast);
 
     if (writers.length) {
-      const finalWriters = cast.map((w) => w.id);
+      const finalWriters = writers.map((w) => w.id);
       finalMovieInfo.writers = JSON.stringify(finalWriters);
     }
 

@@ -71,7 +71,7 @@ exports.createMovie = async (req, res) => {
     language,
   });
 
-  if (director.length) {
+  if (director) {
     if (!isValidObjectId(director)) return sendError(res, "Invalid director id");
     newMovie.director = director;
   }
@@ -375,10 +375,11 @@ exports.getMovieForUpdate = async (req, res) => {
       genres: movie.genres,
       tags: movie.tags,
       director: formatActor(movie.director),
-      writers: movie.writers.map((movie) => formatActor(movie)),
+      writers: movie.writers.map((w) => formatActor(w)),
       cast: movie.cast.map((c) => {
+        console.log(c.actor);
         return {
-          id: c.id,
+          id: c._id,
           profile: formatActor(c.actor),
           roleAs: c.roleAs,
           leadActor: c.leadActor,
