@@ -4,7 +4,7 @@ const morgan = require("morgan");
 const { errorHandler } = require("./middlewares/error");
 const cors = require("cors");
 require("dotenv").config();
-const { DBconnection } = require("./db");
+const { connectDB } = require("./db");
 const app = express();
 
 const userRouter = require("./routes/user");
@@ -33,7 +33,9 @@ app.use("/*", notFoundHandler);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 8000;
-DBconnection(app, PORT);
-// app.listen(PORT, () => {
-//   console.log("Backend server running on port: " + PORT);
-// });
+
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log("Backend server running on port: " + PORT);
+  });
+});
