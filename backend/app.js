@@ -5,14 +5,14 @@ const { errorHandler } = require("./middlewares/error");
 const cors = require("cors");
 require("dotenv").config();
 const { connectDB } = require("./db");
-const app = express();
-
 const userRouter = require("./routes/user");
 const actorRouter = require("./routes/actor");
 const movieRouter = require("./routes/movie");
 const reviewRouter = require("./routes/review");
 const adminRouter = require("./routes/admin");
 const { notFoundHandler } = require("./utils/helper");
+
+const app = express();
 
 app.use(cors());
 app.use(express.json());
