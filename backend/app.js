@@ -6,7 +6,7 @@ const cors = require("cors");
 require("dotenv").config();
 const { DBconnection } = require("./db");
 const app = express();
-DBconnection(app);
+
 const userRouter = require("./routes/user");
 const actorRouter = require("./routes/actor");
 const movieRouter = require("./routes/movie");
@@ -33,7 +33,7 @@ app.use("/*", notFoundHandler);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 8000;
-
+DBconnection(app, PORT);
 // app.listen(PORT, () => {
 //   console.log("Backend server running on port: " + PORT);
 // });

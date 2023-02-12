@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-exports.DBconnection = (app) => {
+exports.DBconnection = (app, PORT) => {
   mongoose
     .connect(process.env.MONGO_URI)
     .then(() => {
