@@ -2,7 +2,7 @@ const EmailVerificationToken = require("../models/EmailVerificationToken");
 const PasswordRestToken = require("../models/PasswordRestToken");
 const User = require("../models/User");
 
-const { generateOTP, generateMailTransporter } = require("../utils/mail");
+const { generateOTP } = require("../utils/mail");
 const { sendError, generateRandomByte } = require("../utils/helper");
 const { isValidObjectId } = require("mongoose");
 const jwt = require("jsonwebtoken");
@@ -45,18 +45,6 @@ exports.create = async (req, res) => {
     `;
 
   await sendConfirmationEmail(newUser, subject, html);
-
-  // const transport = generateMailTransporter();
-
-  // transport.sendMail({
-  //   from: "verification@moviemri.com",
-  //   to: newUser.email,
-  //   subject: "Email Verification OTP",
-  //   html: `
-  //     <p>This is your verification OTP</p>
-  //     <h1>${OTP}</h1>
-  //   `,
-  // });
 
   res.status(201).json({
     user: {
@@ -106,17 +94,6 @@ exports.verifyEmail = async (req, res) => {
     `;
 
   await sendConfirmationEmail(user, subject, html);
-
-  // const transport = generateMailTransporter();
-
-  // transport.sendMail({
-  //   from: "verification@moviemri.com",
-  //   to: user.email,
-  //   subject: "Welcom Email from MoieMRI",
-  //   html: `
-  //     <p>Your has been verified, thank you for chooseing movieMRI</p>
-  //   `,
-  // });
 
   const jwtToken = await jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
 
@@ -171,18 +148,6 @@ exports.resendEmailVerificationToken = async (req, res) => {
 
   await sendConfirmationEmail(user, subject, html);
 
-  // const transport = generateMailTransporter();
-
-  // transport.sendMail({
-  //   from: "verification@moviemri.com",
-  //   to: user.email,
-  //   subject: "Email Verification OTP",
-  //   html: `
-  //     <p>This is your verification OTP</p>
-  //     <h1>${OTP}</h1>
-  //   `,
-  // });
-
   res.status(201).json({
     message: `New OTP has been sent to your email address: ${user.email}`,
   });
@@ -224,18 +189,6 @@ exports.forgetPassword = async (req, res) => {
 
   await sendConfirmationEmail(user, subject, html);
 
-  // const transport = generateMailTransporter();
-
-  // transport.sendMail({
-  //   from: "security@moviemri.com",
-  //   to: user.email,
-  //   subject: "password Reset",
-  //   html: `
-  //     <p>Click here to reset your password:</p>
-  //     <a href="${resetPasswordUrl}">Reset Password</a>
-  //   `,
-  // });
-
   res.status(201).json({
     message: `Reset password link has been sent to your email address: ${user.email}`,
   });
@@ -273,17 +226,6 @@ exports.resetPassword = async (req, res) => {
     `;
 
   await sendConfirmationEmail(user, subject, html);
-
-  // const transport = generateMailTransporter();
-
-  // transport.sendMail({
-  //   from: "security@moviemri.com",
-  //   to: user.email,
-  //   subject: "Password Reset Successfull",
-  //   html: `
-  //     <p>Your password has been reset, please signin with your new password</p>
-  //   `,
-  // });
 
   res.status(201).json({
     message: "Your password has been reset, please signin with your new password",

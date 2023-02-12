@@ -8,12 +8,8 @@ import MovieList from "./MovieList";
 export default function TopRatedTVSeries() {
   const [movies, setMovies] = useState([]);
 
-  const { updateNotification } = useNotification();
-
   const fetchMovies = async (signal) => {
-    const { error, movies } = await getTopRatedMovies("TV Series", signal);
-
-    // if (error) return updateNotification("error", error);
+    const { movies } = await getTopRatedMovies("TV Series", signal);
 
     setMovies([...movies]);
   };

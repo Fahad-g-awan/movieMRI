@@ -4,7 +4,6 @@ import { useState } from "react";
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { getLatestUploads } from "../../api/movie";
-// import { useNotification } from "../../hooks";
 
 let count = 0;
 let intervalId;
@@ -18,18 +17,14 @@ export default function HeroSlideShow() {
   const [visible, setVisible] = useState(true);
   const [upNext, setUpNext] = useState([]);
 
-  // const { updateNotification } = useNotification();
   const slideRef = useRef();
   const cloneSlideRef = useRef();
 
   const fetchLatestUploads = async (signal) => {
     const { movies, error } = await getLatestUploads(signal);
 
-    // if (error) return updateNotification("error", error);
-
     setMovies([...movies]);
     setSlide(movies[0]);
-    console.log(movies);
   };
 
   const updateUpNext = (currentIndex) => {

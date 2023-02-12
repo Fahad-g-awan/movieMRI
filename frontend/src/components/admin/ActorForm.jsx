@@ -6,6 +6,7 @@ import PosterSelector from "../form/PosterSelector";
 import Selector from "../Selector";
 import { ImSpinner3 } from "react-icons/im";
 import { useEffect } from "react";
+import Submit from "../form/Submit";
 
 const defaultActorInfo = {
   name: "",
@@ -29,7 +30,7 @@ const validateActor = ({ avatar, name, about, gender }) => {
   return { error: null };
 };
 
-export default function ActorForm({ title, btnTitle, onSubmit, busy, initialState }) {
+export default function ActorForm({ title, btnTitle, onSubmit, busy, initialState, onClose }) {
   const [actorInfo, setActorInfo] = useState({ ...defaultActorInfo });
   const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
 
@@ -82,9 +83,18 @@ export default function ActorForm({ title, btnTitle, onSubmit, busy, initialStat
       <div className="flex justify-between items-center mb-3">
         <h1 className="dark:text-white text-primary font-semibold text-xl">{title}</h1>
 
-        <button className="bg-primary text-white dark:bg-white dark:text-primary h-8 w-24 hover:opacity-80 transition rounded flex items-center justify-center">
-          {busy ? <ImSpinner3 className="animate-spin" /> : btnTitle}
-        </button>
+        <div className="flex space-x-2">
+          <button className="bg-primary text-white dark:bg-white dark:text-primary h-8 w-24 hover:opacity-80 transition rounded flex items-center justify-center">
+            {busy ? <ImSpinner3 className="animate-spin" /> : btnTitle}
+          </button>
+          <button
+            className="bg-primary text-white dark:bg-white dark:text-primary h-8 w-24 hover:opacity-80 transition rounded flex items-center justify-center"
+            onClick={onClose}
+            type="button"
+          >
+            Cancel
+          </button>
+        </div>
       </div>
 
       <div className="flex space-x-2">

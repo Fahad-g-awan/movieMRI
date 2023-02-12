@@ -31,7 +31,6 @@ export const signIn = async (userInfo) => {
     const { data } = await client.post("/user/signin", userInfo);
     return data;
   } catch (error) {
-    console.log(error);
     const { response } = error;
 
     if (response?.data) return response.data;
@@ -50,7 +49,6 @@ export const getIsAuth = async (token) => {
     });
     return data;
   } catch (error) {
-    console.log(error);
     const { response } = error;
 
     if (response?.data) return response.data;

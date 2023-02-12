@@ -1,4 +1,5 @@
 import React from "react";
+import ActorsProvider from "./ActorsProvider";
 import AuthProvider from "./AuthProvider";
 import MoviesProvider from "./MoviesProvider";
 import NotificationProvider from "./NotificationProvider";
@@ -9,11 +10,13 @@ export default function ContextProvider({ children }) {
   return (
     <NotificationProvider>
       <SearchProvider>
-        <MoviesProvider>
-          <AuthProvider>
-            <ThemeProvider>{children}</ThemeProvider>
-          </AuthProvider>
-        </MoviesProvider>
+        <ActorsProvider>
+          <MoviesProvider>
+            <AuthProvider>
+              <ThemeProvider>{children}</ThemeProvider>
+            </AuthProvider>
+          </MoviesProvider>
+        </ActorsProvider>
       </SearchProvider>
     </NotificationProvider>
   );

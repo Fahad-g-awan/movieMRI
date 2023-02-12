@@ -1,4 +1,5 @@
 import React, { createContext, useState } from "react";
+import { getAppInfo } from "../api/admin";
 import { getMovies } from "../api/movie";
 import { useNotification } from "../hooks";
 
@@ -11,6 +12,7 @@ export default function MoviesProvider({ children }) {
   const [movies, setMovies] = useState([]);
   const [latestUploads, setLatestUploads] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
+  const [appInfo, setAppInfo] = useState({ movieCount: 0, reviewCount: 0, userCount: 0 });
 
   const { updateNotification } = useNotification();
 
@@ -32,6 +34,14 @@ export default function MoviesProvider({ children }) {
     if (error) return updateNotification("error", error);
 
     setLatestUploads([...movies]);
+  };
+
+  const fetchAppInfo = async (qty = 5) => {
+    const { appInfo, error } = await getAppInfo();
+
+    if (error) return updateNotification("error", error);
+
+    setAppInfo({ ...appInfo });
   };
 
   const fetchNextPage = () => {
@@ -56,6 +66,8 @@ export default function MoviesProvider({ children }) {
         fetchMovies,
         fetchNextPage,
         fetchPreviousPage,
+        appInfo,
+        fetchAppInfo,
       }}
     >
       {children}

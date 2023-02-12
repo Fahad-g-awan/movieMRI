@@ -26,8 +26,8 @@ exports.getMostRated = async (req, res) => {
 
   const topRatedMovies = await Promise.all(movies.map(mapMovies));
 
-  if (topRatedMovies.length) {
-    return res.json(null);
+  if (!topRatedMovies.length) {
+    return res.json({ movies: null });
   }
 
   res.json({ movies: topRatedMovies });

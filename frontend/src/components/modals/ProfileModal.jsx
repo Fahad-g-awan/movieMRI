@@ -21,6 +21,7 @@ export default function ProfileModal({ visible, onClose, profileId }) {
   const { avatar, name, about } = profile;
 
   useEffect(() => {
+    setProfile({});
     if (profileId) fetchActorProfile();
   }, [profileId]);
 
@@ -28,6 +29,7 @@ export default function ProfileModal({ visible, onClose, profileId }) {
     <ModalContainer visible={visible} onClose={onClose} ignoreContainer>
       <div className="w-72 p-5 rounded bg-white flex flex-col items-center dark:bg-primary space-y-3">
         <img src={avatar} className="w-28 h-28 rounded-full" />
+
         <h1 className="text-primary dark:text-white font-semibold">{name}</h1>
         <p className="dark:text-dark-subtle text-light-subtle ">{about}</p>
       </div>

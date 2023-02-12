@@ -78,12 +78,6 @@ exports.validateMovie = [
 
       return true;
     }),
-
-  // check("poster").custom((_, { req }) => {
-  //   if (!req.file) throw Error("movie poster field is missing");
-
-  //   return true;
-  // }),
 ];
 
 exports.validateTrailer = check("trailer")

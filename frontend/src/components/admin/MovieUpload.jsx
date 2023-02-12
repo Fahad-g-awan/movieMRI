@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { uploadMovie, uploadTrailer } from "../../api/movie";
-import { useNotification } from "../../hooks";
+import { useMovies, useNotification } from "../../hooks";
 import ModalContainer from "../modals/ModalContainer";
 import MovieForm from "./MovieForm";
 
@@ -15,6 +15,7 @@ export default function MovieUpload({ visible, onClose }) {
   const [busy, setBusy] = useState(false);
 
   const { updateNotification } = useNotification();
+  const { fetchLatestUploads, fetchAppInfo, fetchMovies } = useMovies();
 
   const resetState = () => {
     setVideoSelected(false);
@@ -66,7 +67,9 @@ export default function MovieUpload({ visible, onClose }) {
     if (error) return updateNotification("error", error);
 
     updateNotification("success", "Movie uploaded successfully");
-
+    fetchLatestUploads();
+    fetchAppInfo();
+    fetchMovies();
     resetState();
 
     onClose();

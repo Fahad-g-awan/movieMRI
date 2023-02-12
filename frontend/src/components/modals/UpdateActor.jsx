@@ -11,7 +11,6 @@ export default function UpdateActor({ visible, onClose, onSuccess, initialState 
 
   const submitHandler = async (data) => {
     setBusy(true);
-    console.log(initialState.id);
     const { error, actor } = await updateActor(initialState.id, data);
     setBusy(false);
     if (error) return updateNotification("error", error);
@@ -20,8 +19,9 @@ export default function UpdateActor({ visible, onClose, onSuccess, initialState 
     onClose();
   };
   return (
-    <ModalContainer onClose={onClose} visible={visible} ignoreContainer>
+    <ModalContainer visible={visible} ignoreContainer>
       <ActorForm
+        onClose={onClose}
         busy={busy}
         onSubmit={!busy ? submitHandler : null}
         title="Update Actor"

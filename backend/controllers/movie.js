@@ -332,8 +332,6 @@ exports.removeMovie = async (req, res) => {
     resource_type: "video",
   });
 
-  console.log(trailerId);
-
   if (result !== "ok") return sendError(res, "Colud not remove movie trailer from cloud");
 
   await Movie.findByIdAndDelete(movieId);
@@ -385,7 +383,6 @@ exports.getMovieForUpdate = async (req, res) => {
       director: formatActor(movie.director),
       writers: movie.writers.map((w) => formatActor(w)),
       cast: movie.cast.map((c) => {
-        console.log(c.actor);
         return {
           id: c._id,
           profile: formatActor(c.actor),
@@ -519,7 +516,7 @@ exports.getRelatedMovies = async (req, res) => {
 };
 
 exports.getTopRatedMovies = async (req, res) => {
-  const { type = "Documentary" } = req.query;
+  const { type = "Film" } = req.query;
 
   const movies = await Movie.aggregate(topRatedPipeline(type));
 

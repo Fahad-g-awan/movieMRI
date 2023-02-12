@@ -188,107 +188,112 @@ export default function MovieForm({ onSubmit, busy, btnTitle, initialState, onCl
 
   return (
     <>
-      <div className="flex space-x-3">
-        <div className="w-[70%] space-y-5">
-          <div>
-            <Label htmlFor="title">Title</Label>
+      <div>
+        <div className="flex space-x-3">
+          <div className="w-[70%] space-y-5">
+            <div>
+              <Label htmlFor="title">Title</Label>
+              <input
+                name="title"
+                value={title}
+                onChange={changeHandler}
+                id="title"
+                type="text"
+                className={commonInputClasses + " border-b-2 font-semibold text-xl"}
+                placeholder="Titanic"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="storyLine">Story line</Label>
+              <textarea
+                name="storyLine"
+                value={storyLine}
+                onChange={changeHandler}
+                id="storyLine"
+                className={commonInputClasses + " border-b-2 resize-none h-24 custom-scroll-bar"}
+                placeholder="Movie storyline..."
+              ></textarea>
+            </div>
+
+            <div>
+              <Label htmlFor="tags">Tags</Label>
+              <TagsInput value={tags} onChange={updateTags} />
+            </div>
+
+            <DirectorSelector onSelect={updateDirector} />
+
+            <div>
+              <div className="flex justify-between">
+                <LabelWithBadge badge={cast.length}>Add cast & crew</LabelWithBadge>
+                <ViewAllBtn onClick={displayCastModal} visible={cast.length}>
+                  View All
+                </ViewAllBtn>
+              </div>
+              <CastForm onSubmit={updateCast} />
+            </div>
+
+            <div>
+              <div className="flex justify-between">
+                <LabelWithBadge badge={writers.length} htmlFor="writers">
+                  Writers
+                </LabelWithBadge>
+                <ViewAllBtn onClick={displayWritersModal} visible={writers.length}>
+                  View All
+                </ViewAllBtn>
+              </div>
+              <WriterSelector onSelect={updateWriters} />
+            </div>
+
             <input
-              name="title"
-              value={title}
+              type="date"
+              name="releaseDate"
               onChange={changeHandler}
-              id="title"
-              type="text"
-              className={commonInputClasses + " border-b-2 font-semibold text-xl"}
-              placeholder="Titanic"
+              className={commonInputClasses + " border-2 rounded p-1 w-auto"}
+              value={releaseDate}
             />
           </div>
-
-          <div>
-            <Label htmlFor="storyLine">Story line</Label>
-            <textarea
-              name="storyLine"
-              value={storyLine}
+          {/* second div  */}
+          <div className="w-[30%] space-y-5">
+            <PosterSelector
+              name="poster"
+              label="Select Poster"
               onChange={changeHandler}
-              id="storyLine"
-              className={commonInputClasses + " border-b-2 resize-none h-24 custom-scroll-bar"}
-              placeholder="Movie storyline..."
-            ></textarea>
+              selectedPoster={selectedPosterForUI}
+              accept="image/jpg, image/jpej, image/png"
+            />
+
+            <GenresSelector badge={genres.length} onClick={displayGenresModal} />
+
+            <Selector
+              onChange={changeHandler}
+              value={type}
+              name="type"
+              options={typeOptions}
+              label="Type"
+            />
+            <Selector
+              onChange={changeHandler}
+              value={language}
+              name="language"
+              options={languageOptions}
+              label="Language"
+            />
+            <Selector
+              onChange={changeHandler}
+              value={status}
+              name="status"
+              options={statusOptions}
+              label="Status"
+            />
           </div>
-
-          <div>
-            <Label htmlFor="tags">Tags</Label>
-            <TagsInput value={tags} onChange={updateTags} />
-          </div>
-
-          <DirectorSelector onSelect={updateDirector} />
-
-          <div>
-            <div className="flex justify-between">
-              <LabelWithBadge badge={cast.length}>Add cast & crew</LabelWithBadge>
-              <ViewAllBtn onClick={displayCastModal} visible={cast.length}>
-                View All
-              </ViewAllBtn>
-            </div>
-            <CastForm onSubmit={updateCast} />
-          </div>
-
-          <div>
-            <div className="flex justify-between">
-              <LabelWithBadge badge={writers.length} htmlFor="writers">
-                Writers
-              </LabelWithBadge>
-              <ViewAllBtn onClick={displayWritersModal} visible={writers.length}>
-                View All
-              </ViewAllBtn>
-            </div>
-            <WriterSelector onSelect={updateWriters} />
-          </div>
-
-          <input
-            type="date"
-            name="releaseDate"
-            onChange={changeHandler}
-            className={commonInputClasses + " border-2 rounded p-1 w-auto"}
-            value={releaseDate}
-          />
-
-          <Submit busy={busy} type="button" value={btnTitle} onClick={handleSubmit} />
         </div>
-
-        <div className="w-[30%] space-y-5">
-          <PosterSelector
-            name="poster"
-            label="Select Poster"
-            onChange={changeHandler}
-            selectedPoster={selectedPosterForUI}
-            accept="image/jpg, image/jpej, image/png"
-          />
-
-          <GenresSelector badge={genres.length} onClick={displayGenresModal} />
-
-          <Selector
-            onChange={changeHandler}
-            value={type}
-            name="type"
-            options={typeOptions}
-            label="Type"
-          />
-          <Selector
-            onChange={changeHandler}
-            value={language}
-            name="language"
-            options={languageOptions}
-            label="Language"
-          />
-          <Selector
-            onChange={changeHandler}
-            value={status}
-            name="status"
-            options={statusOptions}
-            label="Status"
-          />
-          <div className="h-80 flex items-end">
-            <Submit busy={busy} type="button" value="Cancel" onClick={onClose} />
+        <div className="flex space-x-2 mt-3">
+          <div className="w-[70%]">
+            <Submit busy={busy} type="button" value={btnTitle} onClick={handleSubmit} />
+          </div>
+          <div className="w-[30%]">
+            <Submit type="button" value="Cancel" onClick={onClose} />
           </div>
         </div>
       </div>

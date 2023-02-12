@@ -2,21 +2,19 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { BsTrash, BsPencilSquare } from "react-icons/bs";
-import { deleteActor, getActors, searchActor } from "../../api/actor";
-import { useNotification, useSearch } from "../../hooks";
-import ConfirmModa from "../modals/ConfirmModal";
+import { deleteActor, searchActor } from "../../api/actor";
+import { useActor, useNotification, useSearch } from "../../hooks";
 import AppSearchForm from "../form/AppSearchForm";
 import UpdateActor from "../modals/UpdateActor";
 import NotFoundText from "../NotFoundText";
 import PrevAndNextButtons from "../PrevAndNextButtons";
+import ConfirmModal from "../modals/ConfirmModal";
 
 let currentPageNo = 0;
 let limit = 20;
 
 export default function Actors() {
-  const [actors, setActors] = useState([]);
   const [results, setResults] = useState([]);
-  const [reachedToEnd, setReachedToEnd] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedProfile, SetSelectedProfile] = useState(null);
@@ -24,31 +22,10 @@ export default function Actors() {
 
   const { updateNotification } = useNotification();
   const { handleSearch, resetSearch, resultNotFound } = useSearch();
+  const { actors, fetchActors, handleOnNextClick, handleOnPrevClick, handleOnUpdateActor } =
+    useActor();
 
-  const fetchActors = async (pageNo) => {
-    const { profiles, error } = await getActors(limit, pageNo);
-
-    if (error) return updateNotification("error", error);
-    if (!profiles.length) {
-      currentPageNo = pageNo - 1;
-      return setReachedToEnd(true);
-    }
-
-    setActors([...profiles]);
-  };
-
-  const handleOnNextClick = () => {
-    if (reachedToEnd) return;
-    currentPageNo += 1;
-    fetchActors(currentPageNo);
-  };
-
-  const handleOnPrevClick = () => {
-    if (currentPageNo <= 0) return;
-    if (reachedToEnd) setReachedToEnd(false);
-    currentPageNo -= 1;
-    fetchActors(currentPageNo);
-  };
+  const fetchProfiles = async (pageNo) => fetchActors(pageNo);
 
   const handleOnEditClick = (actor) => {
     setShowUpdateModal(true);
@@ -58,17 +35,6 @@ export default function Actors() {
   const handleOnDeleteClick = (actor) => {
     SetSelectedProfile(actor);
     setShowConfirmModal(true);
-  };
-
-  const handleOnUpdateActor = (profile) => {
-    const updatedActors = actors.map((actor) => {
-      if (profile.id === actor.id) {
-        return profile;
-      }
-      return actor;
-    });
-
-    setActors([...updatedActors]);
   };
 
   const hideUpdateModal = () => {
@@ -98,11 +64,11 @@ export default function Actors() {
 
     hideConfirmModal();
 
-    fetchActors(currentPageNo);
+    fetchProfiles(currentPageNo);
   };
 
   useEffect(() => {
-    fetchActors(currentPageNo);
+    fetchProfiles(currentPageNo);
   }, []);
 
   return (
@@ -118,7 +84,7 @@ export default function Actors() {
         </div>
         <NotFoundText text="No results found" visible={resultNotFound} />
 
-        <div className="grid grid-cols-4 gap-5">
+        <div className="grid grid-cols-4 gap-5 mt-5">
           {results.length || resultNotFound
             ? results.map((actor) => {
                 return (
@@ -151,7 +117,7 @@ export default function Actors() {
         ) : null}
       </div>
 
-      <ConfirmModa
+      <ConfirmModal
         visible={showConfirmModal}
         title="Are you sure?"
         onConfirm={handleOnConfirmDelete}

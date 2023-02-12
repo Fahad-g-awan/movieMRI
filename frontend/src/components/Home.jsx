@@ -18,7 +18,7 @@ export default function Home() {
   // Render UI
   return (
     <div className="dark:bg-primary bg-white min-h-screen">
-      <Container className="px-2 xl:p-0">
+      <Container className="px-3">
         <NotVerified />
         <HeroSlideShow />
         <div className="space-y-3 py-8">

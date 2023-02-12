@@ -16,8 +16,6 @@ export default function AllMovies() {
 
   const { updateNotification } = useNotification();
 
-  //   const { fetchNextPage, fetchPreviousPage } = useMovies();
-
   const fetchNextPage = () => {
     if (reachedToEnd) return;
     currentPageNo += 1;
@@ -56,7 +54,7 @@ export default function AllMovies() {
 
   return (
     <div className="dark:bg-primary bg-white min-h-screen py-8">
-      <Container className="px-2 xl:p-0">
+      <Container className="px-3">
         <MovieList movies={movies} title="All Movies & Web Series" />;
         <PrevAndNextButtons
           className="mt-5"

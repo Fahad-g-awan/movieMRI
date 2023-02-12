@@ -87,8 +87,8 @@ export default function SingleMovie() {
 
   return (
     <div className="dark:bg-primary bg-white min-h-screen pb-10">
-      <Container className="xl:px-0 px-2">
-        <video poster={poster} controls src={trailer}></video>
+      <Container className="px-3">
+        <video poster={poster} controls src={trailer} className="w-full"></video>
 
         <div className="flex justify-between">
           <h1 className="xl:text-4xl lg:text-3xl text-2xl text-highlight dark:text-highlight-dark font-semibold py-3">
@@ -119,7 +119,7 @@ export default function SingleMovie() {
           {/* writers */}
           <ListWithLabel label="Writers:">
             {writers.map((w) => (
-              <CustomButtonLink key={w.id} label={w.name} />
+              <CustomButtonLink key={w.id} label={w.name} onClick={() => handleProfileClick(w)} />
             ))}
           </ListWithLabel>
 
@@ -153,7 +153,7 @@ export default function SingleMovie() {
           </ListWithLabel>
 
           {/* cast and crew */}
-          <CastProfiles cast={cast} />
+          <CastProfiles cast={cast} handleProfileClick={handleProfileClick} />
 
           {/* related movies */}
           <RelatedMovies movieId={movieId} />
@@ -184,7 +184,7 @@ const ListWithLabel = ({ children, label }) => {
   );
 };
 
-const CastProfiles = ({ cast }) => {
+const CastProfiles = ({ cast, handleProfileClick }) => {
   return (
     <div className="">
       <h1 className="text-light-subtle dark:text-dark-subtle font-semibold text-2xl mb-2">
@@ -199,7 +199,7 @@ const CastProfiles = ({ cast }) => {
                 src={profile.avatar}
               />
 
-              <CustomButtonLink label={profile.name} />
+              <CustomButtonLink label={profile.name} onClick={() => handleProfileClick(profile)} />
 
               <span className="text-light-subtle dark:text-dark-subtle text-sm">As</span>
               <p className="text-light-subtle dark:text-dark-subtle">{roleAs}</p>

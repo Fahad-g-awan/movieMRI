@@ -35,16 +35,6 @@ router.post(
   validate,
   createMovie
 );
-
-// router.patch(
-//   "/update-without-poster/:movieId",
-//   isAuth,
-//   isAdmin,
-//   //   parseData,
-//   validateMovie,
-//   validate,
-//   udateMovieWithoutPoster
-// );
 router.patch(
   "/update/:movieId",
   isAuth,
