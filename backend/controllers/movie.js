@@ -20,6 +20,7 @@ exports.uploadTrailer = async (req, res) => {
     file.path,
     {
       resource_type: "video",
+      folder: "MovieMRI/MovieMRI_trailers",
       use_filename: true,
     },
     function (error, result) {
