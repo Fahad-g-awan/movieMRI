@@ -4,14 +4,15 @@ const morgan = require("morgan");
 const { errorHandler } = require("./middlewares/error");
 const cors = require("cors");
 require("dotenv").config();
-require("./db");
+const { DBconnection } = require("./db");
+const app = express();
+DBconnection(app);
 const userRouter = require("./routes/user");
 const actorRouter = require("./routes/actor");
 const movieRouter = require("./routes/movie");
 const reviewRouter = require("./routes/review");
 const adminRouter = require("./routes/admin");
 const { notFoundHandler } = require("./utils/helper");
-const app = express();
 
 app.use(cors());
 app.use(express.json());
@@ -33,6 +34,6 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => {
-  console.log("Backend server running on port: " + PORT);
-});
+// app.listen(PORT, () => {
+//   console.log("Backend server running on port: " + PORT);
+// });
