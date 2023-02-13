@@ -129,8 +129,9 @@ exports.topRatedPipeline = (type) => {
 
   if (type) {
     matchedOptions.type = { $eq: type };
-    matchedOptions.reviews = {};
+    matchedOptions.reviews = { $exists: true };
   }
+  console.log(matchedOptions);
   return [
     {
       $lookup: {
