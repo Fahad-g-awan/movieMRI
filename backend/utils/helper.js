@@ -127,7 +127,10 @@ exports.topRatedPipeline = (type) => {
     status: { $eq: "public" },
   };
 
-  if (type) matchedOptions.type = { $eq: type };
+  if (type) {
+    matchedOptions.type = { $eq: type };
+    matchedOptions.reviews = {};
+  }
   return [
     {
       $lookup: {
