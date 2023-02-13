@@ -4,6 +4,7 @@ const {
   relatedMovieAggregation,
   getAverageRating,
   topRatedPipeline,
+  genresPipeline,
 } = require("../utils/helper");
 const cloudinary = require("../cloud");
 const Movie = require("../models/Movie");
@@ -565,12 +566,21 @@ exports.searchPublicMovies = async (req, res) => {
 };
 
 exports.getPublicMovies = async (req, res) => {
-  const { limit = 5, pageNo = 0 } = req.query;
+  const { limit = 5, pageNo = 0, genres } = req.query;
 
-  const movies = await Movie.find({})
-    .sort({ createdAt: -1 })
-    .skip(parseInt(limit) * parseInt(pageNo))
-    .limit(parseInt(limit));
+  let movies = [];
+
+  if (genres) {
+    movies = await Movie.aggregate(genresPipeline(genres))
+      .sort({ createdAt: -1 })
+      .skip(parseInt(limit) * parseInt(pageNo))
+      .limit(parseInt(limit));
+  } else {
+    movies = await Movie.find({})
+      .sort({ createdAt: -1 })
+      .skip(parseInt(limit) * parseInt(pageNo))
+      .limit(parseInt(limit));
+  }
 
   const mapMovies = async (m) => {
     const reviews = await getAverageRating(m._id);
@@ -578,7 +588,7 @@ exports.getPublicMovies = async (req, res) => {
     return {
       id: m._id,
       title: m.title,
-      poster: m.poster?.url,
+      poster: m.poster,
       responsivePosters: m.poster?.responsive,
       reviews: { ...reviews },
     };

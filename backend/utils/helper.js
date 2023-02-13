@@ -131,7 +131,7 @@ exports.topRatedPipeline = (type) => {
     matchedOptions.type = { $eq: type };
     matchedOptions.reviews = { $exists: true };
   }
-  console.log(matchedOptions);
+
   return [
     {
       $lookup: {
@@ -176,4 +176,46 @@ exports.getAverageRating = async (movieId) => {
   }
 
   return reviews;
+};
+
+exports.genresPipeline = (genres) => {
+  const matchedOptions = {
+    reviews: { $exists: true, $ne: [] },
+    status: { $eq: "public" },
+  };
+
+  if (genres) {
+    matchedOptions.genres = { $eq: genres };
+    matchedOptions.reviews = { $exists: true };
+  }
+
+  return [
+    {
+      $lookup: {
+        from: "Movie",
+        localField: "reviews",
+        foreignField: "_id",
+        as: "topRated",
+      },
+    },
+    {
+      $match: matchedOptions,
+    },
+    {
+      $project: {
+        title: 1,
+        poster: "$poster.url",
+        responsivePosters: "$poster.responsive",
+        reviewCount: { $size: "$reviews" },
+      },
+    },
+    {
+      $sort: {
+        reviewCount: -1,
+      },
+    },
+    {
+      $limit: 5,
+    },
+  ];
 };

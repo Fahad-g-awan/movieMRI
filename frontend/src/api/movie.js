@@ -51,9 +51,13 @@ export const getMovies = async (limit, pageNo) => {
   }
 };
 
-export const getAllPublicMovies = async (limit, pageNo) => {
+export const getAllPublicMovies = async (limit, pageNo, genres) => {
   try {
-    const { data } = await client(`/movie/all-movies?limit=${limit}&pageNo=${pageNo}`);
+    let endPoint = `/movie/all-movies?limit=${limit}&pageNo=${pageNo}`;
+
+    if (genres) endPoint += "&genres=" + genres;
+
+    const { data } = await client(endPoint);
     return data;
   } catch (error) {
     return catchError(error);

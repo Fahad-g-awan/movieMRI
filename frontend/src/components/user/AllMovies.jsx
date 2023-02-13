@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { getAllPublicMovies } from "../../api/movie";
 import { useMovies, useNotification } from "../../hooks";
 import Container from "../Container";
@@ -15,6 +16,8 @@ export default function AllMovies() {
   const [reachedToEnd, setReachedToEnd] = useState(false);
 
   const { updateNotification } = useNotification();
+  const search = useLocation().search;
+  const genres = new URLSearchParams(search).get("genres");
 
   const fetchNextPage = () => {
     if (reachedToEnd) return;
@@ -30,7 +33,7 @@ export default function AllMovies() {
   };
 
   const fetchAllMovies = async (pageNo = currentPageNo) => {
-    const { error, movies } = await getAllPublicMovies(limit, pageNo);
+    const { error, movies } = await getAllPublicMovies(limit, pageNo, genres);
 
     if (error) return updateNotification("error", error);
 

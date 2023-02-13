@@ -58,6 +58,10 @@ export default function SingleMovie() {
     setShowProfileModal(false);
   };
 
+  const handleGenresClick = (genres) => {
+    navigate("/movie/all-public-movies?genres=" + genres);
+  };
+
   useEffect(() => {
     if (movieId) fetchMovie();
   }, [movieId]);
@@ -126,7 +130,13 @@ export default function SingleMovie() {
           {/* lead actors */}
           <ListWithLabel label="Lead Actors:">
             {cast.map(({ id, profile, leadActor }) => {
-              return leadActor ? <CustomButtonLink label={profile.name} key={id} /> : null;
+              return leadActor ? (
+                <CustomButtonLink
+                  label={profile.name}
+                  key={id}
+                  onClick={() => handleProfileClick(profile)}
+                />
+              ) : null;
             })}
           </ListWithLabel>
 
@@ -143,7 +153,7 @@ export default function SingleMovie() {
           {/* genres */}
           <ListWithLabel label="Genres:">
             {genres.map((g) => (
-              <CustomButtonLink label={g} key={g} clickAble={false} />
+              <CustomButtonLink label={g} key={g} onClick={() => handleGenresClick(g)} />
             ))}
           </ListWithLabel>
 
