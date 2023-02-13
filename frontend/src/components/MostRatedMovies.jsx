@@ -15,6 +15,7 @@ export default function MostRatedMovies() {
     const { movies, error } = await getMostRatedMovies();
 
     if (error) return updateNotification("error", error);
+
     if (!movies.length) {
       return;
     }
@@ -31,7 +32,7 @@ export default function MostRatedMovies() {
         Most Rated Movies
       </h1>
       <ul className="space-y-3">
-        {movies.reviews?.length ? (
+        {movies.length ? (
           movies.map((movie) => {
             return (
               <li key={movie.id}>

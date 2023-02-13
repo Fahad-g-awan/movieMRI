@@ -123,7 +123,7 @@ exports.relatedMovieAggregation = (tags, movieId) => {
 
 exports.topRatedPipeline = (type) => {
   const matchedOptions = {
-    reviews: { $exists: true },
+    reviews: { $exists: true, $ne: [] },
     status: { $eq: "public" },
   };
 
