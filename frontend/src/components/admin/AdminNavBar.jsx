@@ -5,6 +5,7 @@ import { BiMoviePlay } from "react-icons/bi";
 import { FaUserNinja } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { useAuth } from "../../hooks";
+import logo from "./logo.png";
 
 export default function AdminNavbar() {
   const { logoutHandler } = useAuth();
@@ -15,7 +16,7 @@ export default function AdminNavbar() {
         <ul>
           <li className="mb-8">
             <Link to="/">
-              {/* <img src="logo.png" alt="logo" /> */}
+              <img src={logo} alt="" className="sm:h-11 h-8" />
               <h1 className="p-2 text-white font-semibold text-lg">MovieMRI</h1>
             </Link>
           </li>
