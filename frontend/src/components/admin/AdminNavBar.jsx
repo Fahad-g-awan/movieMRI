@@ -17,7 +17,7 @@ export default function AdminNavbar() {
           <li className="mb-8">
             <Link to="/">
               <img src={logo} alt="" className="sm:h-11 h-8" />
-              <h1 className="p-2 text-white font-semibold text-lg">MovieMRI</h1>
+              {/* <h1 className="p-2 text-white font-semibold text-lg">MovieMRI</h1> */}
             </Link>
           </li>
           <li>
