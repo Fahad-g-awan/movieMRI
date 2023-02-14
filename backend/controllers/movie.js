@@ -5,6 +5,7 @@ const {
   getAverageRating,
   topRatedPipeline,
   genresPipeline,
+  typesPipeline,
 } = require("../utils/helper");
 const cloudinary = require("../cloud");
 const Movie = require("../models/Movie");
@@ -566,12 +567,17 @@ exports.searchPublicMovies = async (req, res) => {
 };
 
 exports.getPublicMovies = async (req, res) => {
-  const { limit = 5, pageNo = 0, genres } = req.query;
+  const { limit = 5, pageNo = 0, genres, type } = req.query;
 
   let movies = [];
 
   if (genres) {
-    movies = await Movie.aggregate(genresPipeline(genres))
+    movies = await Movie.find({ genres: genres })
+      .sort({ createdAt: -1 })
+      .skip(parseInt(limit) * parseInt(pageNo))
+      .limit(parseInt(limit));
+  } else if (type) {
+    movies = await Movie.find({ type: type })
       .sort({ createdAt: -1 })
       .skip(parseInt(limit) * parseInt(pageNo))
       .limit(parseInt(limit));

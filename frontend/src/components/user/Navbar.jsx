@@ -4,6 +4,7 @@ import { BsFillSunFill } from "react-icons/bs";
 import Container from "../Container";
 import { useAuth, useTheme } from "../../hooks";
 import AppSearchForm from "../form/AppSearchForm";
+import logo from "./logo.png";
 
 export default function Navbar() {
   const { toggleTheme } = useTheme();
@@ -19,10 +20,10 @@ export default function Navbar() {
     <div className="bg-secondary shadow-sm shadow-gray-500">
       <Container className="p-2">
         <div className="text-white flex justify-between items-center">
-          {/* <img src="/logo.png" alt="" className="sm:h-10" /> */}
           <Link to="/">
-            <h1 className="font-semibold sm:text-xl text-sm">MovieMRI</h1>
+            <img src={logo} alt="" className="sm:h-11 h-8" />
           </Link>
+          {/* <h1 className="font-semibold sm:text-xl text-sm">MovieMRI</h1> */}
 
           <ul className="flex items-center sm:space-x-4 space-x-2">
             <li>

@@ -24,5 +24,5 @@ export default function TopRatedMovies(signal) {
     };
   }, []);
 
-  return <MovieList movies={movies} title="Viewers Choice (Movies)" />;
+  return <MovieList movies={movies} title="Viewers Choice (Movies)" type="Film" />;
 }

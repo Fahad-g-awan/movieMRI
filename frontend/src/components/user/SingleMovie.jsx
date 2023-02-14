@@ -10,6 +10,7 @@ import AddRatingModel from "../modals/AddRatingModel";
 import ProfileModal from "../modals/ProfileModal";
 import RatingStar from "../RatingStar";
 import RelatedMovies from "../RelatedMovies";
+import ListWithLabel from "./ListWithLabel";
 
 const covertDate = (date = "") => {
   return date.split("T")[0];
@@ -184,15 +185,6 @@ export default function SingleMovie() {
     </div>
   );
 }
-
-const ListWithLabel = ({ children, label }) => {
-  return (
-    <div className="flex space-x-2">
-      <p className="text-light-subtle dark:text-dark-subtle font-semibold">{label}</p>
-      {children}
-    </div>
-  );
-};
 
 const CastProfiles = ({ cast, handleProfileClick }) => {
   return (

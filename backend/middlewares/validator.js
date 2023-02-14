@@ -88,7 +88,7 @@ exports.validateTrailer = check("trailer")
       const result = new URL(url);
 
       if (!result.protocol.includes("http")) throw Error("Invalid trailer url");
-      console.log(url);
+
       const arr = url.split("/");
       const publicId = arr[arr.length - 1].split(".")[0];
 

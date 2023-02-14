@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+import { Helmet } from "react-helmet";
 import { useLocation, useParams } from "react-router-dom";
 import { getAllPublicMovies } from "../../api/movie";
 import { useMovies, useNotification } from "../../hooks";
@@ -18,6 +19,7 @@ export default function AllMovies() {
   const { updateNotification } = useNotification();
   const search = useLocation().search;
   const genres = new URLSearchParams(search).get("genres");
+  const type = new URLSearchParams(search).get("type");
 
   const fetchNextPage = () => {
     if (reachedToEnd) return;
@@ -33,7 +35,7 @@ export default function AllMovies() {
   };
 
   const fetchAllMovies = async (pageNo = currentPageNo) => {
-    const { error, movies } = await getAllPublicMovies(limit, pageNo, genres);
+    const { error, movies } = await getAllPublicMovies(limit, pageNo, genres, type);
 
     if (error) return updateNotification("error", error);
 
@@ -57,9 +59,13 @@ export default function AllMovies() {
 
   return (
     <div className="dark:bg-primary bg-white min-h-screen py-8">
+      <Helmet>
+        <title>movieMRI - All movies</title>
+      </Helmet>
       <Container className="px-3">
         <MovieList movies={movies} title="All Movies & Web Series" />;
         <PrevAndNextButtons
+          reachedToEnd={reachedToEnd}
           className="mt-5"
           onPrevClick={fetchPreviousPage}
           onNextClick={fetchNextPage}

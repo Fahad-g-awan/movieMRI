@@ -51,11 +51,12 @@ export const getMovies = async (limit, pageNo) => {
   }
 };
 
-export const getAllPublicMovies = async (limit, pageNo, genres) => {
+export const getAllPublicMovies = async (limit, pageNo, genres, type) => {
   try {
     let endPoint = `/movie/all-movies?limit=${limit}&pageNo=${pageNo}`;
 
     if (genres) endPoint += "&genres=" + genres;
+    if (type) endPoint += "&type=" + type;
 
     const { data } = await client(endPoint);
     return data;
